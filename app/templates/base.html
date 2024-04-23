@@ -11,7 +11,20 @@
     </head>
     <body>
         <div id="header">
-            <a href="/index">Home</a>
+            <a href="/index"><img src="../static/img/logo.svg"></a>
+
+            <div id="nav">
+                <a href="/index" class="nav-btn">Marketplace</a>
+                <a href="/how_it_works" class="nav-btn">How it Works</a>
+                <a href="/packs" class="nav-btn">Packs</a>
+                
+            </div>
+
+            <div id="auth">
+                <a href="/login" class="btn primary-btn">Log in</a>
+                <a href="/signup" class="btn secondary-btn">Sign up</a>
+            </div>
+            
         </div>
         {% block content %}{% endblock %}
     </body>
