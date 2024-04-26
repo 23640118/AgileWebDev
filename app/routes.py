@@ -18,13 +18,3 @@ def rules():
 @routes.route('/packs')
 def packs():
     return render_template('packs.html', title='Packs')
-
-
-@routes.route('/login')
-def login():
-    return render_template('login.html', title='Log in')
-
-
-@routes.route('/signup')
-def signup():
-    return render_template('signup.html', title='Sign up')
