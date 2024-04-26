@@ -2,6 +2,11 @@ from flask import Flask
 
 
 #Starts forum
+"""
+!!!Please Read!!!: 
+Code within start_forum() will execute twice within main.py
+Please make sure that code added to start_forum() will run independently from the numbers of times the function is executed.
+"""
 def start_forum():
     forum = Flask(__name__)
     #Configures the forum with key encrypting Cookies and Session data
