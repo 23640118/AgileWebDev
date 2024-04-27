@@ -1,5 +1,6 @@
 from app import db
 from flask_login import UserMixin
+#SQLite
 from sqlalchemy.sql import func
 
 class Post(db.Model):
@@ -16,7 +17,10 @@ class User(db.Model, UserMixin):
     username = db.Column(db.String(10))
     email = db.Column(db.String(50), unique=True)
     password = db.Column(db.String(20))
+    money = db.Column(db.Integer)
     cards_owned = db.Column(db.String(100))          #all cards a user owns in a comma-separated list
+    def get_id(self):
+        return str(self.user_id)
 
 class Card(db.Model):
     card_id = db.Column(db.Integer, primary_key=True)

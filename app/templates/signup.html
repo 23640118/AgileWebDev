@@ -17,9 +17,13 @@
       var username = document.getElementById('username').value
       var email = document.getElementById('email').value
 
+      plength = password1.length;
+      ulength = username.length;
+      elength = email.length;
+
       //Check for length of password
-      if (password1.length > 20){
-         alert('Password length exceeds 20.')
+      if (plength > 20 || plength == 0){
+         alert('Password length must range from 1-20 letters.');
          return false;
       }
       //Check for password and confirmed password
@@ -28,13 +32,14 @@
          return false;
       }
 
-
       //Check for simple eamil validation including '@' is done by bootstrap type: 'email'
-
+      if (elength < 3){
+         alert('Please enter a valid email.');
+      }
 
       //Checks for username length
-      if (username.length > 10){
-         alert('Username length exceeds 10.')
+      if (ulength > 10 || ulength == 0){
+         alert('Username length must range from 1-10 letters.');
          return false;
       }
 
@@ -88,6 +93,25 @@
      />
    </div>
    <br />
-   <button type="submit" class="btn btn-primary">Submit</button>
+   {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            {% if category == 'error' %}
+                <div class="alert alert-{{ category }}" role="alert">
+                    {{ message }}
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            {% endif %}
+            {% if category == 'success' %}
+                <div class="alert alert-{{ category }}" role="alert">
+                  {{ message }}
+                </div>
+                <a href="{{ url_for('auth.login') }}" class="btn btn-primary">Login Now</a>
+            {% endif %}
+          {% endfor %}
+        {% else %}
+            <button type="submit" class="btn btn-primary">Submit</button>
+        {% endif %}
+    {% endwith %}
  </form>
 {% endblock %}

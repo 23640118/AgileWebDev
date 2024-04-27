@@ -34,8 +34,12 @@
             </div>
 
             <div id="auth">
+              {% if current_user.is_authenticated %}
+                <a href="/logout" class="btn-primary-btn">Logout</a>
+              {% else %}
                 <a href="/login" class="btn primary-btn">Log in</a>
                 <a href="/signup" class="btn secondary-btn">Sign up</a>
+              {% endif %}
             </div>
             
         </div>
