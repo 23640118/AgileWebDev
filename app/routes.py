@@ -1,4 +1,5 @@
 from flask import Blueprint, render_template, flash, redirect, url_for
+from flask_login import login_required
 
 routes = Blueprint('routes', __name__)
 
@@ -16,5 +17,6 @@ def rules():
 
 
 @routes.route('/packs')
+@login_required
 def packs():
     return render_template('packs.html', title='Packs')

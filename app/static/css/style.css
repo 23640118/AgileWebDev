@@ -77,3 +77,11 @@ body {
 #auth .btn {
     margin-left: 10px;
 }
+
+.alert-success {
+    background-color: green;
+}
+
+.alert-error {
+    background-color: red;
+}

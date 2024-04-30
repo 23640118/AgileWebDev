@@ -1,49 +1,117 @@
 {% extends "base.html" %}
 
 {% block content %}
-<form method="POST">
-   <h3 align="center">Sign Up</h3>
+<style>
+   .center-form {
+      text-align:center;
+      line-height:120%;
+      }
+</style>
+
+<script>
+   //Check for validity of user entered information
+   //Future sanitisation checks should also be implemented here
+   function validateForm() {
+      var password1 = document.getElementById('password1').value;
+      var password2 = document.getElementById('password2').value;
+      var username = document.getElementById('username').value
+      var email = document.getElementById('email').value
+
+      plength = password1.length;
+      ulength = username.length;
+      elength = email.length;
+
+      //Check for length of password
+      if (plength > 20 || plength == 0){
+         alert('Password length must range from 1-20 letters.');
+         return false;
+      }
+      //Check for password and confirmed password
+      if (password1 != password2) {
+         alert('Passwords do not match.');
+         return false;
+      }
+
+      //Check for simple eamil validation including '@' is done by bootstrap type: 'email'
+      if (elength < 3){
+         alert('Please enter a valid email.');
+      }
+
+      //Checks for username length
+      if (ulength > 10 || ulength == 0){
+         alert('Username length must range from 1-10 letters.');
+         return false;
+      }
+
+      return true;
+   }
+</script>
+<form method="POST" onsubmit="return validateForm()" class="center-form">
+   <h3>Sign Up</h3>
    <div class="form-group">
      <label for="email">Email Address</label>
+     <br />
      <input
        type="email"
        class="form-control"
        id="email"
        name="email"
-       placeholder="Enter email"
+       placeholder="Enter Email"
      />
    </div>
    <div class="form-group">
-     <label for="firstName">First Name</label>
+     <label for="username">Username</label>
+     <br />
      <input
        type="text"
        class="form-control"
-       id="firstName"
-       name="firstName"
-       placeholder="Enter first name"
+       id="username"
+       name="username"
+       placeholder="Enter Username (Maximum 10 Letters)"
      />
    </div>
    <div class="form-group">
      <label for="password1">Password</label>
+     <br />
      <input
        type="password"
        class="form-control"
        id="password1"
        name="password1"
-       placeholder="Enter password"
+       placeholder="Enter Password (Maximum 20 Letters)"
      />
    </div>
    <div class="form-group">
      <label for="password2">Password (Confirm)</label>
+     <br />
      <input
        type="password"
        class="form-control"
        id="password2"
        name="password2"
-       placeholder="Confirm password"
+       placeholder="Confirm Password"
      />
    </div>
    <br />
-   <button type="submit" class="btn btn-primary">Submit</button>
+   {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            {% if category == 'error' %}
+                <div class="alert alert-{{ category }}" role="alert">
+                    {{ message }}
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            {% endif %}
+            {% if category == 'success' %}
+                <div class="alert alert-{{ category }}" role="alert">
+                  {{ message }}
+                </div>
+                <a href="{{ url_for('auth.login') }}" class="btn btn-primary">Login Now</a>
+            {% endif %}
+          {% endfor %}
+        {% else %}
+            <button type="submit" class="btn btn-primary">Submit</button>
+        {% endif %}
+    {% endwith %}
  </form>
 {% endblock %}
