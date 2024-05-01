@@ -5,5 +5,36 @@
 
    <h1>Welcome!</h1>
    <p> Welcome to our card trading site!</p>
+
+   {% if current_user.is_authenticated %}
+      <a href="/post" class="btn-primary-btn">Make a post!</a>
+   {% endif %}
+
+   <div id="posts">
+   {% for post in posts|reverse %}
+   <div class="post">
+      <div id="details">
+         <span id="author">{{ post.author.username }}</span>
+         <span id="date">{{ post.date.strftime("%A, %d %B %Y %I:%M:%S %p") }}</span>
+      </div>
+      <p id="post-message">{{ post.message }}</p>
+
+      <h4> Cards gave up </h4>
+      <div class="cards-container">
+      {% for card in post.cards_traded %}
+      <img src="{{ card.url }}" alt="{{ card_id }}">
+      {% endfor %}
+      </div>
+
+      <h4> Cards received </h4>
+      <div class="cards-container">
+      {% for card in post.cards_wanted %}
+      <img src="{{ card.url }}" alt="{{ card_id }}">
+      {% endfor %}
+      </div>
+      
+   </div>
+   {% endfor %}
+   </div>
    
 {% endblock %}
