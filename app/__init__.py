@@ -1,12 +1,15 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
+from flask_migrate import Migrate
 
 #initalise a database object
 db = SQLAlchemy()
 
 #initalise login manager object
 login_manager = LoginManager()
+
+migrate = Migrate()
 
 #Starts forum
 def start_forum():
@@ -20,6 +23,7 @@ def start_forum():
     forum.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'  #sqlalchemy database is located at 'sqlite:///database.db'
     
     db.init_app(forum)
+    migrate.init_app(forum, db)
 
     from .routes import routes
     from .auth import auth

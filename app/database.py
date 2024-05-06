@@ -4,6 +4,7 @@ from flask_login import UserMixin
 from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
 
+# Table to user posts
 class Post(db.Model):
     post_id = db.Column(db.Integer, primary_key=True)
     owner_id = db.Column(db.Integer, db.ForeignKey('user.user_id'))
@@ -24,7 +25,8 @@ post_cards_wanted = db.Table('post_cards_wanted',
     db.Column('post_id', db.Integer, db.ForeignKey('post.post_id')),
     db.Column('card_id', db.Integer, db.ForeignKey('card.card_id'))
 )
-    
+
+#Table to store registered users 
 class User(db.Model, UserMixin):
     user_id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(10))
@@ -33,9 +35,11 @@ class User(db.Model, UserMixin):
     money = db.Column(db.Integer)
     cards = db.relationship('Card', secondary='user_cards', backref=db.backref('users', lazy='dynamic'))
     posts = db.relationship('Post', backref='author', lazy=True)
+    #required for flask_login module
     def get_id(self):
         return str(self.user_id)
 
+# Table that stores all the cards
 class Card(db.Model):
     card_id = db.Column(db.Integer, primary_key=True)
     rarity = db.Column(db.String(9))                #'RARE', 'EPIC', 'LEGENDARY'
@@ -47,6 +51,7 @@ user_cards = db.Table('user_cards',
     db.Column('card_id', db.Integer, db.ForeignKey('card.card_id'))
 )
 
+# Table for logging user actions
 class UserAction(db.Model):
     action_id = db.Column(db.Integer, primary_key=True)
     action_type = db.Column(db.String(10))          #'POST_postID', 'EXCHANGE_postID", 'LOGIN', 'LOGOUT','REGISTER'

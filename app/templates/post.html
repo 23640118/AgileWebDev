@@ -1,8 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-
-{% if current_user.cards_owned == None %}
+{% if current_user.cards|length == 0 %}
     <p> You don't have any cards! </p>
 
 {% else %}
