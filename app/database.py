@@ -44,6 +44,8 @@ class Card(db.Model):
     card_id = db.Column(db.Integer, primary_key=True)
     rarity = db.Column(db.String(9))                #'RARE', 'EPIC', 'LEGENDARY'
     name = db.Column(db.String(50), unique=True)
+    artist = db.Column(db.String(50))
+    year = db.Column(db.Integer)
     url = db.Column(db.String(100))
 
 user_cards = db.Table('user_cards',

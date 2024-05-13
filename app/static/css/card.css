@@ -1,0 +1,67 @@
+.card-design{
+    width: 250px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: linear-gradient(60deg, #F9F9FB, #FBFAFB);
+    border-radius: 12px;
+    padding: 15px;
+    font-family: urbanist;
+    margin: 20px;
+}
+
+.card-design img {
+    width: 100%;
+    border-radius: 5px 5px 0px 0px;
+    margin: 10px 0px 10px 0px;
+}
+
+.rarity {
+    height: 20px;
+    width: 100%;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.rarity-container {
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 0px 10px;
+    font-family: taviraji;
+    font-weight: 800;
+    color: #EEF2F7;
+    font-size: 12px;
+    letter-spacing: 1px;
+}
+
+.card-details {
+    font-family: inherit;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 5px;
+}
+
+.card-name {
+    font-family: inherit;
+    font-weight: 300;
+    width:100%;
+    font-size: 14px;
+}
+
+.card-artist {
+    font-family: inherit;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.card-year {
+    font-family: inherit;
+    font-weight: 500;
+    font-size: 13px;
+}
