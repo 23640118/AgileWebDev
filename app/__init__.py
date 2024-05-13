@@ -21,6 +21,7 @@ def start_forum():
     #Configures the forum with key encrypting Cookies and Session data
     forum.config['SECRET_KEY'] = 'This Key Encrypts Cookies and Session Data Of User'
     forum.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'  #sqlalchemy database is located at 'sqlite:///database.db'
+    forum.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     
     db.init_app(forum)
     migrate.init_app(forum, db)
@@ -32,8 +33,5 @@ def start_forum():
     forum.register_blueprint(auth, url_prefix='/')
 
     from . import database
-    #Create db file
-    with forum.app_context():
-        db.create_all()
     
     return forum

@@ -59,7 +59,8 @@ def signup():
         else:
             new_user = User(email=email,username=username, password=generate_password_hash(password1, method='pbkdf2:sha256'), money=0)
             db.session.add(new_user)
-            new_action = UserAction(action_type = 'REGISTER', user_id = db.session.query(User).count())
+            db.session.flush()
+            new_action = UserAction(action_type = 'REGISTER', user_id = new_user.user_id)
             db.session.add(new_action)
             db.session.commit()
             flash('Signup Success! Account Created!', category = 'success')
