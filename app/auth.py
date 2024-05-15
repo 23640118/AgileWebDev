@@ -28,10 +28,10 @@ def logout():
 @auth.route('/login', methods=['GET','POST'])
 def login():
     if request.method == 'POST':
-        username = request.form.get('username')
+        email = request.form.get('email')
         password = request.form.get('password')
 
-        user = User.query.filter_by(username=username).first()
+        user = User.query.filter_by(email=email).first()
         if user:
             if check_password_hash(user.password, password):
                 login_user(user,remember=True)
@@ -40,9 +40,9 @@ def login():
                 db.session.commit()
                 return redirect(url_for('routes.packs'))
             else:
-                flash('Username and Password Does not Match.', category='error')
+                flash('Login Failed: Please email and password.', category='error')
         else:
-            flash('Username and Password Does not Match.', category='error')
+            flash('Login Failed: Please email and password.', category='error')
     return render_template('login.html', title='Log in')
 
 
