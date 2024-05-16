@@ -17,7 +17,7 @@ def start_forum():
 
     login_manager.init_app(forum)
     login_manager.login_view = 'auth.login'  # Redirects unauthorised users to login page
-    #login_manager.login_message_category = "error"
+    login_manager.login_message_category = "error"
 
     #Configures the forum with key encrypting Cookies and Session data
     forum.config['SECRET_KEY'] = 'This Key Encrypts Cookies and Session Data Of User'
