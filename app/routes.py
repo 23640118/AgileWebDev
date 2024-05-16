@@ -20,3 +20,8 @@ def rules():
 @login_required
 def packs():
     return render_template('packs.html', title='Packs')
+
+@routes.route('/inbox')
+@login_required
+def inbox():
+    return render_template('inbox.html', title='Inbox')

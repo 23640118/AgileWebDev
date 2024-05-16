@@ -40,9 +40,9 @@ def login():
                 db.session.commit()
                 return redirect(url_for('routes.packs'))
             else:
-                flash('Login Failed: Please email and password.', category='error')
+                flash('Login Failed: Please check email and password.', category='error')
         else:
-            flash('Login Failed: Please email and password.', category='error')
+            flash('Login Failed: Please check email and password.', category='error')
     return render_template('login.html', title='Log in')
 
 
