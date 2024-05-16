@@ -8,11 +8,15 @@ $(document).ready(function() {
                 type: 'POST',
                 data: { post_id: postId},
                 success: function(response) {
-                    alert(response)
+                    alert(response);
+                    console.log("yes")
+                    // Refresh the page when successful to remove the trade button.
+                    location.reload();
                 },
                 error: function(xhr, status, error) {
                     console.error(xhr.responseText);
-                    alert(xhr.responseText)
+                    console.log("no")
+                    alert(xhr.responseText);
                 }
             });
         }

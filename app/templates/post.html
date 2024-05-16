@@ -21,7 +21,15 @@
         />
     </div>
     <div class="form-group">
-
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}" role="alert">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
         <label for="cards_traded"><h4>Which cards do you want to trade?</h4></label><br>
         <div class="cards-container">
         {% for card in current_user.cards %}
