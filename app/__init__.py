@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_migrate import Migrate
 
+
 #initalise a database object
 db = SQLAlchemy()
 
@@ -26,6 +27,11 @@ def start_forum():
     
     db.init_app(forum)
     migrate.init_app(forum, db)
+
+    @login_manager.user_loader
+    def load_user(user_id):
+        from .database import User
+        return User.query.get(int(user_id))
 
     from .routes import routes
     from .auth import auth
