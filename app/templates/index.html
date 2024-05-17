@@ -11,7 +11,6 @@
    {% endif %}
    </div>  
 
-
    <h2> Community posts</h2>
    <div id="posts">
    {% for post in posts|reverse %}
@@ -46,7 +45,15 @@
          <button type="button" class="btn btn-primary trade-btn">Trade</button>
       </form>
       {% endif %}
-
+      {% with messages = get_flashed_messages(with_categories=true) %}
+         {% if messages %}
+            {% for category, message in messages %}
+               <div class="alert alert-{{ category }}" role="alert">
+                     {{ message }}
+               </div>
+            {% endfor %}
+         {% endif %}
+      {% endwith %}
       {% if post.completed == True %}
       <h4 class="trade-completed">Trade Completed!</h4>
       {% endif %}

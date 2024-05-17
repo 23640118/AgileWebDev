@@ -3,6 +3,7 @@ from flask_login import login_required, current_user
 from .database import Post, User, Card
 from . import db
 from datetime import datetime
+from flask import Response
 
 routes = Blueprint('routes', __name__)
 
@@ -26,13 +27,11 @@ def trade():
     # Confirm the both users have the required cards
     for card in post.cards_traded:
         if card not in trade_user.cards:
-            flash('Trade error', 'error')
-            return trade_user.username + " does not have the needed card to complete this trade!"
+            return Response(trade_user.username + " does not have the required card/s to complete this trade!", status = 400)
     
     for card in post.cards_wanted:
         if card not in u.cards:
-            flash('Trade error', 'error')
-            return "You don't have the needed cards to complete this trade!"
+            return Response("You don't have the required card/s to complete this trade!", status = 400)
     
     # Complete the trade
     for card in post.cards_traded:
@@ -48,7 +47,6 @@ def trade():
 
     db.session.commit()
     
-    flash('Post updated successfully', 'success')
     return "Congratulations! You've completed the trade!"
 
 @routes.route('/post', methods=['GET','POST'])
@@ -60,10 +58,13 @@ def post():
         cards_wanted = request.form.getlist('cards_wanted')
 
         u = current_user
-        new_post = Post(owner_id=u.user_id, date=datetime.now(), message=message, completed=False)
+        new_post = Post(owner_id=u.user_id, message=message, completed=False)
 
-        if len(cards_traded) == 0 or len(cards_wanted) == 0:
-            flash('Cannot trade for 0 cards', 'error')
+        if len(cards_traded) == 0:
+            flash('Select at least one card to trade', 'error')
+            return redirect('/post')
+        if len(cards_wanted) == 0:
+            flash('Select at least one card you want in return', 'error')
             return redirect('/post')
         
         # Add traded cards to the post
@@ -80,6 +81,7 @@ def post():
 
         db.session.add(new_post)
         db.session.commit()
+        flash('Post Created!', 'success')
     return render_template('post.html', title='Make a post', cards=cards)
 
 
