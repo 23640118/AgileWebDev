@@ -68,3 +68,7 @@ def open_pack():
     db.session.commit()
     return render_template('open_pack.html', items=items)
     
+@routes.route('/inbox')
+@login_required
+def inbox():
+    return render_template('inbox.html', title='Inbox')
