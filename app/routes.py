@@ -1,13 +1,15 @@
 from flask import Blueprint, render_template, flash, redirect, url_for
-from flask_login import login_required
+from flask_login import login_required, LoginManager, current_user
 import random
-from .database import Card
+from typing import cast
+from . import db
 
 routes = Blueprint('routes', __name__)
 
 def get_random_card():
+    from .database import Card
     rarity = ['common', 'rare', 'epic', 'legendary']
-    probability = [0.70, 0.15, 0.05, 0.01]
+    probability = [0.60, 0.25, 0.10, 0.05]
     chosen_rarity = random.choices(rarity, weights=probability)[0]
     rarity_list = Card.query.filter_by(rarity = chosen_rarity).all()
     return random.choice(rarity_list)
@@ -30,6 +32,14 @@ def packs():
     return render_template('packs.html', title='Packs')
 
 @routes.route('/open_pack')
+@login_required
 def open_pack():
+    from .database import User, Card
+    user = cast(User, current_user)
     items = [get_random_card() for _ in range(5)]
+
+    for card in items:
+        user.cards.append(card)
+    db.session.commit()
     return render_template('open_pack.html', items=items)
+    
