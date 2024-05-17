@@ -9,9 +9,11 @@ routes = Blueprint('routes', __name__)
 def get_random_card():
     from .database import Card
     rarity = ['common', 'rare', 'epic', 'legendary']
-    probability = [0.60, 0.25, 0.10, 0.05]
+    probability = [0.60, 0.25, 0.14, 0.01]
     chosen_rarity = random.choices(rarity, weights=probability)[0]
     rarity_list = Card.query.filter_by(rarity = chosen_rarity).all()
+    if not rarity_list:
+        return None
     return random.choice(rarity_list)
   
 
@@ -38,8 +40,13 @@ def open_pack():
     user = cast(User, current_user)
     items = [get_random_card() for _ in range(5)]
 
+    if None in items:
+        flash("An error occurred while opening the pack. Please try again.", "error")
+        return "None"
+    
     for card in items:
         user.cards.append(card)
+
     db.session.commit()
     return render_template('open_pack.html', items=items)
     
