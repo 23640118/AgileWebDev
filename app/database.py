@@ -3,6 +3,7 @@ from flask_login import UserMixin
 #SQLite
 from datetime import datetime
 from sqlalchemy.orm import relationship
+from hashlib import md5
 
 # Table to user posts
 class Post(db.Model):
@@ -35,9 +36,15 @@ class User(db.Model, UserMixin):
     money = db.Column(db.Integer)
     cards = db.relationship('Card', secondary='user_cards', backref=db.backref('users', lazy='dynamic'))
     posts = db.relationship('Post', backref='author', lazy=True)
+    about = db.Column(db.String(500))
+    
     #required for flask_login module
     def get_id(self):
         return str(self.user_id)
+    def avatar(self, size):
+        digest = md5(self.email.lower().encode('utf-8')).hexdigest()
+        return f'https://www.gravatar.com/avatar/{digest}?d=identicon&s={size}'
+        
 
 # Table that stores all the cards
 class Card(db.Model):
@@ -50,7 +57,8 @@ class Card(db.Model):
 
 user_cards = db.Table('user_cards',
     db.Column('user_id', db.Integer, db.ForeignKey('user.user_id')),
-    db.Column('card_id', db.Integer, db.ForeignKey('card.card_id'))
+    db.Column('card_id', db.Integer, db.ForeignKey('card.card_id')),
+    db.Column('obtain_date', db.DateTime(timezone=True), default=datetime.now())
 )
 
 # Table for logging user actions
