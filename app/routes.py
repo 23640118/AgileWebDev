@@ -1,11 +1,12 @@
-from flask import Blueprint, render_template, flash, redirect, url_for, request
+from flask import Blueprint, render_template, flash, redirect, url_for, request, Response
 from flask_login import login_required, LoginManager, current_user
 import random
 from typing import cast
 from . import db
 from datetime import datetime, timedelta
-from .database import UserAction, Post, User, Card
-from flask import Response
+from .database import UserAction, Post, User, Card, user_cards
+from sqlalchemy import desc, and_
+
 
 routes = Blueprint('routes', __name__)
 
@@ -65,12 +66,18 @@ def trade():
     
     # Complete the trade
     for card in post.cards_traded:
-        trade_user.cards.remove(card)
+            # Find the newest card instance for the trade_user
+        newest_card = db.session.query(user_cards).filter(and_(user_cards.c.user_id == trade_uid, user_cards.c.card_id == card.card_id)).order_by(desc(user_cards.c.obtain_date)).first()
+        if newest_card:
+            db.session.execute(user_cards.delete().where(and_(user_cards.c.user_id == trade_uid, user_cards.c.card_id == card.card_id, user_cards.c.obtain_date == newest_card.obtain_date)))
         u.cards.append(card)
 
     for card in post.cards_wanted:
+        newest_card = db.session.query(user_cards).filter(and_(user_cards.c.user_id == u.user_id, user_cards.c.card_id == card.card_id)).order_by(desc(user_cards.c.obtain_date)).first()
+        if newest_card:
+            db.session.execute(user_cards.delete().where(and_(user_cards.c.user_id == u.user_id, user_cards.c.card_id == card.card_id, user_cards.c.obtain_date == newest_card.obtain_date)))
         trade_user.cards.append(card)
-        u.cards.remove(card)
+        
     
     # Mark trade as completed
     post.completed = True
@@ -119,6 +126,14 @@ def post():
         flash('Post Created!', 'success')
     return render_template('post.html', title='Make a post', cards=cards)
 
+@routes.route('/user/<username>')
+def user(username):
+    user = User.query.filter_by(username=username).first()
+    cards = Card.query.all()
+    n_posts = len(user.posts)
+    n_cards = len(cards)
+    n_owned = len(user.cards)
+    return render_template('user.html', user=user, cards=cards, n_posts=n_posts, n_cards=n_cards, n_owned=n_owned)
 
 @routes.route('/how_it_works')
 def rules():
@@ -127,6 +142,8 @@ def rules():
 @login_required
 @routes.route('/934910939049', methods=['GET','POST'])
 def new_card():
+    if current_user.user_id != 1:
+        return render_template('rules.html', title='How it works')
     if request.method == 'POST':
         name = request.form.get('name')
         rarity = request.form.get('rarity')
@@ -142,7 +159,6 @@ def new_card():
 @routes.route('/packs')
 @login_required
 def packs():
-    from .database import User, UserAction
     user = cast(User, current_user)
     # Get the time of the last free pack action
     last_free_pack_action = UserAction.query.filter_by(user_id=user.user_id, action_type='PACK_FREE').order_by(UserAction.date.desc()).first()
@@ -161,7 +177,6 @@ def packs():
 @routes.route('/open_pack')
 @login_required
 def open_pack():
-    from .database import User
     user = cast(User, current_user)
     items = [get_random_card() for _ in range(5)]
     #Removes repeating cards

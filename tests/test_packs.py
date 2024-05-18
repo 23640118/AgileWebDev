@@ -64,7 +64,7 @@ class BasicTest(unittest.TestCase):
         response = self.client.get('/open_pack', follow_redirects=True)
         self.assertEqual(response.status_code, 200)
         action2 = UserAction.query.filter_by(user_id = 1, action_type = 'PACK_FREE').order_by(UserAction.date.desc()).first()
-        # Check free card has not been received
-        self.assertTrue(action.action_id != action2.action_id)
+        # Check no new free pack in userAction table
+        self.assertTrue(action.action_id == action2.action_id)
         # Check user gain no cards
         self.assertTrue(number_of_cards == len(user.cards))
