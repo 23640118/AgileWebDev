@@ -2,38 +2,8 @@
 
 {% block content %}
    <!-- Write all HTML code here -->
+
    <h1>This is where you purchase packs!</h1>
    <p> Choose one of our packs:</p>
-
-   <button id="free_pack_button">Free Pack</button>
-
-   <div id="packItemsContainer"></div>
-   {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            {% for category, message in messages %}
-                <div class="alert alert-{{ category }}" role="alert">
-                    {{ message }}
-                </div>
-            {% endfor %}
-        {% endif %}
-    {% endwith %}
-{% endblock %}
-
-{% block scripts %}
-   <script>
-      console.log("L")
-      document.getElementById("free_pack_button").addEventListener('click', function () {
-         console.log("e")
-         fetch('/open_pack')
-            .then(response => response.text())
-            .then(html => {
-               if (html == "None") {
-                  location.reload();
-               }
-               else{
-                  document.getElementById('packItemsContainer').innerHTML = html;
-               }
-            })
-         });      
-   </script>
+   
 {% endblock %}
