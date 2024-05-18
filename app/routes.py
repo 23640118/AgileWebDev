@@ -4,8 +4,9 @@ import random
 from typing import cast
 from . import db
 from datetime import datetime, timedelta
-from .database import UserAction, Post, User, Card
+from .database import UserAction, Post, User, Card, user_cards
 from flask import Response
+from sqlalchemy import desc, and_
 
 routes = Blueprint('routes', __name__)
 
@@ -46,12 +47,18 @@ def trade():
     
     # Complete the trade
     for card in post.cards_traded:
-        trade_user.cards.remove(card)
+            # Find the newest card instance for the trade_user
+        newest_card = db.session.query(user_cards).filter(and_(user_cards.c.user_id == trade_uid, user_cards.c.card_id == card.card_id)).order_by(desc(user_cards.c.obtain_date)).first()
+        if newest_card:
+            db.session.execute(user_cards.delete().where(and_(user_cards.c.user_id == trade_uid, user_cards.c.card_id == card.card_id, user_cards.c.obtain_date == newest_card.obtain_date)))
         u.cards.append(card)
 
     for card in post.cards_wanted:
+        newest_card = db.session.query(user_cards).filter(and_(user_cards.c.user_id == u.user_id, user_cards.c.card_id == card.card_id)).order_by(desc(user_cards.c.obtain_date)).first()
+        if newest_card:
+            db.session.execute(user_cards.delete().where(and_(user_cards.c.user_id == u.user_id, user_cards.c.card_id == card.card_id, user_cards.c.obtain_date == newest_card.obtain_date)))
         trade_user.cards.append(card)
-        u.cards.remove(card)
+        
     
     # Mark trade as completed
     post.completed = True
