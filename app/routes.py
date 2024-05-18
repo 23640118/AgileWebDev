@@ -31,9 +31,9 @@ def trade():
     post_id = request.form.get('post_id')   # Post being completed
     u = current_user                        # User completing
 
-    post = Post.query.get(post_id)
+    post = db.session.get(Post, post_id)
     trade_uid = post.owner_id
-    trade_user = User.query.get(trade_uid)
+    trade_user = db.session.get(User, trade_uid)
 
     # Confirm the both users have the required cards
     for card in post.cards_traded:
@@ -55,6 +55,8 @@ def trade():
     
     # Mark trade as completed
     post.completed = True
+    new_action = UserAction(action_type = 'TRADE_'+str(post.post_id), user_id = u.user_id)
+    db.session.add(new_action)
 
     db.session.commit()
     
@@ -77,20 +79,23 @@ def post():
         if len(cards_wanted) == 0:
             flash('Select at least one card you want in return', 'error')
             return redirect('/post')
-        
+        db.session.add(new_post)
+
         # Add traded cards to the post
         for card_id in cards_traded:
-            card = Card.query.get(card_id)
+            card = db.session.get(Card, card_id)
             if card:
                 new_post.cards_traded.append(card)
         
         # Add wanted cards to the post
         for card_id in cards_wanted:
-            card = Card.query.get(card_id)
+            card = db.session.get(Card, card_id)
             if card:
                 new_post.cards_wanted.append(card)
 
-        db.session.add(new_post)
+        db.session.flush()        
+        new_action = UserAction(action_type = 'POST_'+str(new_post.post_id), user_id = u.user_id)
+        db.session.add(new_action)
         db.session.commit()
         flash('Post Created!', 'success')
     return render_template('post.html', title='Make a post', cards=cards)
