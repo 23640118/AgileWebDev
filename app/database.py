@@ -64,6 +64,6 @@ user_cards = db.Table('user_cards',
 # Table for logging user actions
 class UserAction(db.Model):
     action_id = db.Column(db.Integer, primary_key=True)
-    action_type = db.Column(db.String(10))          #'POST_postID', 'EXCHANGE_postID", 'LOGIN', 'LOGOUT','REGISTER','PACK_FREE','PACK_PAID'
+    action_type = db.Column(db.String(10))          #'POST_<postID>', 'TRADE_<postID>", 'LOGIN', 'LOGOUT','REGISTER','PACK_FREE','PACK_PAID', 'DELETE_<postID>'
     user_id = db.Column(db.Integer, db.ForeignKey('user.user_id'))
     date = db.Column(db.DateTime(timezone=True), default=datetime.now())

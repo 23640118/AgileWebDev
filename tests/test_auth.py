@@ -29,7 +29,7 @@ class TestAuth(unittest.TestCase):
     def test_login_logout(self):
         # Test login
         response = self.client.post('/login', data=dict(
-            username='test',
+            email='test@t.com',
             password='password'), 
             follow_redirects=True)
         action = UserAction.query.filter_by(user_id = 1, action_type = 'LOGIN').first()
@@ -44,22 +44,22 @@ class TestAuth(unittest.TestCase):
     def test_login_incorrect_password(self):
         # Attempt to log in with incorrect password
         response = self.client.post('/login', data=dict(
-        username='test',
+        email='test@t.com',
         password='incorrect_password'), 
         follow_redirects=True)
         # Check that login failed
         action = UserAction.query.filter_by(user_id = 1, action_type = 'LOGIN').first()
-        self.assertIn(b'Username and Password Does not Match.', response.data)
+        self.assertIn(b'Login Failed: Please check email and password.', response.data)
         self.assertIsNone(action)
 
-    def test_login_incorrect_username(self):
+    def test_login_incorrect_email(self):
         # Attempt to log in with incorrect password
         response = self.client.post('/login', data=dict(
-        username='Non_existence_user',
+        email='Non_existence@user.com',
         password='password'), 
         follow_redirects=True)
         # Check that login failed
-        self.assertIn(b'Username and Password Does not Match.', response.data)
+        self.assertIn(b'Login Failed: Please check email and password.', response.data)
 
     def test_signup(self):
         # Test sign up

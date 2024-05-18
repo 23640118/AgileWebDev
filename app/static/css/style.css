@@ -197,6 +197,27 @@ h2 {
     background-color: rgb(68 165 255);
 }
 
+.delete-btn{
+    background-color: rgb(185, 59, 59);
+    border: 1px solid rgb(148, 28, 28);
+}
+
+.delete-btn:hover{
+    background-color: rgb(148, 28, 28) ;
+    border: 1px solid rgb(148, 28, 28) ;
+}
+
+.delete-btn:active{
+    background-color: rgb(148, 28, 28) !important;
+    border: 1px solid rgb(148, 28, 28) !important;
+    box-shadow: 0 0 0 0.2rem rgb(185, 59, 59) !important;
+}
+.delete-btn:focus {
+    background-color: rgb(148, 28, 28);
+    border: 1px solid rgb(148, 28, 28) ;
+    box-shadow: 0 0 0 0.2rem rgb(185, 59, 59);
+}
+
 #auth .btn {
     margin-left: 10px;
 }

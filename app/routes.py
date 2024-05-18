@@ -1,12 +1,12 @@
-from flask import Blueprint, render_template, flash, redirect, url_for, request
+from flask import Blueprint, render_template, flash, redirect, url_for, request, Response
 from flask_login import login_required, LoginManager, current_user
 import random
 from typing import cast
 from . import db
 from datetime import datetime, timedelta
 from .database import UserAction, Post, User, Card, user_cards
-from flask import Response
 from sqlalchemy import desc, and_
+
 
 routes = Blueprint('routes', __name__)
 
@@ -27,14 +27,33 @@ def index():
     posts = Post.query.all()
     return render_template('index.html', title='Home', posts=posts)
 
+@routes.route('/delete-post', methods=['POST'])
+def delete():
+    post_id = request.form.get('post_id')   # Post being completed
+    u = current_user                        # User completing
+
+    post = db.session.get(Post, post_id)
+
+    # Confirm the both users have the required cards
+    if not post:
+        return Response(" Delete failed: post does not exist!", status = 400)
+    
+    # Mark trade as completed
+    post.completed = True
+    new_action = UserAction(action_type = 'DELETE_'+str(post.post_id), user_id = u.user_id)
+    db.session.add(new_action) 
+    db.session.commit()
+    
+    return "Post deleted!"
+
 @routes.route('/update-post', methods=['POST'])
 def trade():
     post_id = request.form.get('post_id')   # Post being completed
     u = current_user                        # User completing
 
-    post = Post.query.get(post_id)
+    post = db.session.get(Post, post_id)
     trade_uid = post.owner_id
-    trade_user = User.query.get(trade_uid)
+    trade_user = db.session.get(User, trade_uid)
 
     # Confirm the both users have the required cards
     for card in post.cards_traded:
@@ -62,6 +81,8 @@ def trade():
     
     # Mark trade as completed
     post.completed = True
+    new_action = UserAction(action_type = 'TRADE_'+str(post.post_id), user_id = u.user_id)
+    db.session.add(new_action)
 
     db.session.commit()
     
@@ -84,20 +105,23 @@ def post():
         if len(cards_wanted) == 0:
             flash('Select at least one card you want in return', 'error')
             return redirect('/post')
-        
+        db.session.add(new_post)
+
         # Add traded cards to the post
         for card_id in cards_traded:
-            card = Card.query.get(card_id)
+            card = db.session.get(Card, card_id)
             if card:
                 new_post.cards_traded.append(card)
         
         # Add wanted cards to the post
         for card_id in cards_wanted:
-            card = Card.query.get(card_id)
+            card = db.session.get(Card, card_id)
             if card:
                 new_post.cards_wanted.append(card)
 
-        db.session.add(new_post)
+        db.session.flush()        
+        new_action = UserAction(action_type = 'POST_'+str(new_post.post_id), user_id = u.user_id)
+        db.session.add(new_action)
         db.session.commit()
         flash('Post Created!', 'success')
     return render_template('post.html', title='Make a post', cards=cards)
@@ -135,7 +159,6 @@ def new_card():
 @routes.route('/packs')
 @login_required
 def packs():
-    from .database import User, UserAction
     user = cast(User, current_user)
     # Get the time of the last free pack action
     last_free_pack_action = UserAction.query.filter_by(user_id=user.user_id, action_type='PACK_FREE').order_by(UserAction.date.desc()).first()
@@ -154,7 +177,6 @@ def packs():
 @routes.route('/open_pack')
 @login_required
 def open_pack():
-    from .database import User
     user = cast(User, current_user)
     items = [get_random_card() for _ in range(5)]
     #Removes repeating cards
