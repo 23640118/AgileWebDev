@@ -3,7 +3,6 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_migrate import Migrate
 
-
 #initalise a database object
 db = SQLAlchemy()
 
@@ -13,7 +12,7 @@ login_manager = LoginManager()
 migrate = Migrate()
 
 #Starts forum
-def start_forum():
+def start_forum(config):
     forum = Flask(__name__)
 
     login_manager.init_app(forum)
@@ -21,17 +20,10 @@ def start_forum():
     login_manager.login_message_category = "error"
 
     #Configures the forum with key encrypting Cookies and Session data
-    forum.config['SECRET_KEY'] = 'This Key Encrypts Cookies and Session Data Of User'
-    forum.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'  #sqlalchemy database is located at 'sqlite:///database.db'
-    forum.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    forum.config.from_object(config)
     
     db.init_app(forum)
     migrate.init_app(forum, db)
-
-    @login_manager.user_loader
-    def load_user(user_id):
-        from .database import User
-        return User.query.get(int(user_id))
 
     from .routes import routes
     from .auth import auth

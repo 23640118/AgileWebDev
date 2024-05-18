@@ -1,14 +1,14 @@
-from . import db
+from app import db
 from flask_login import UserMixin
 #SQLite
-from sqlalchemy.sql import func
+from datetime import datetime
 from sqlalchemy.orm import relationship
 
 # Table to user posts
 class Post(db.Model):
     post_id = db.Column(db.Integer, primary_key=True)
     owner_id = db.Column(db.Integer, db.ForeignKey('user.user_id'))
-    date = db.Column(db.DateTime(timezone=True), default=func.now())
+    date = db.Column(db.DateTime(timezone=True), default=datetime.now())
     message = db.Column(db.String(500))
     cards_traded = relationship('Card', secondary='post_cards_traded', backref='traded')
     cards_wanted = relationship('Card', secondary='post_cards_wanted', backref='posts_wanted')
@@ -58,4 +58,4 @@ class UserAction(db.Model):
     action_id = db.Column(db.Integer, primary_key=True)
     action_type = db.Column(db.String(10))          #'POST_postID', 'EXCHANGE_postID", 'LOGIN', 'LOGOUT','REGISTER','PACK_FREE','PACK_PAID'
     user_id = db.Column(db.Integer, db.ForeignKey('user.user_id'))
-    date = db.Column(db.DateTime(timezone=True), default=func.now())
+    date = db.Column(db.DateTime(timezone=True), default=datetime.now())
