@@ -174,7 +174,7 @@ def packs():
     return render_template('packs.html', title='Packs', remaining_time=remaining_time.total_seconds())
 
 
-@routes.route('/open_pack')
+@routes.route('/open_pack', methods=['POST'])
 @login_required
 def open_pack():
     user = cast(User, current_user)
