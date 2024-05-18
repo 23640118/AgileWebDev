@@ -5,46 +5,60 @@
     <p> You don't have any cards! </p>
 
 {% else %}
-<form method="POST" class="center-form">
-<h3>New Post!</h3>
-<div class="form-group">
-    <label for="message">Post body</label>
-    <br />
-    <input
-    type="text"
-    class="form-control"
-    id="message"
-    name="message"
-    placeholder="Write your message here..."
-    />
-</div>
-<div class="form-group">
-
-    <label for="cards_traded">Cards to give up:</label><br>
-    <div class="cards-container">
-    {% for card in current_user.cards %}
-    <div class="card-choice">
-    <label for="{{'traded_' ~ card.card_id }}"><img src="{{ card.url }}" alt="{{ card.name }}"></label>
-    <input type="checkbox" id="{{'traded_' ~ card.card_id }}" name="cards_traded" value="{{ card.card_id }}">
+<div class="block">
+    <form method="POST" class="center-form">
+    <h3>Write a new post!</h3>
+    <div class="form-group">
+        <label for="message">Post message:</label>
+        <br />
+        <input
+        type="text"
+        class="form-control block-input-field"
+        id="message"
+        name="message"
+        placeholder="Write your message here..."
+        />
     </div>
-     {% endfor %}
-    </div>
+    <div class="form-group">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}" role="alert">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        <label for="cards_traded"><h4>Which cards do you want to trade?</h4></label><br>
+        <div class="cards-container">
+        {% for card in current_user.cards %}
+        <div class="card-choice">
+        <label for="{{'traded_' ~ card.card_id }}">
+            <custom-card name="{{ card.name }}" year="{{ card.year }}" artist="{{ card.artist }}" rarity="{{ card.rarity }}" img="{{ card.url }}" style="margin:auto"></custom-card>
+        </label>
+        <input type="checkbox" id="{{'traded_' ~ card.card_id }}" name="cards_traded" value="{{ card.card_id }}">
+        </div>
+        {% endfor %}
+        </div>
+            
         
+        <label for="cards_wanted"><h4>What cards do you want to trade for?</h4></label><br>
+        <div class="cards-container">
+        {% for card in cards %}
+        <div class="card-choice">
+        <label for="{{'wanted_' ~ card.card_id }}">
+            <custom-card name="{{ card.name }}" year="{{ card.year }}" artist="{{ card.artist }}" rarity="{{ card.rarity }}" img="{{ card.url }}" style="margin:auto"></custom-card>
+        </label>
+        <input type="checkbox" id="{{'wanted_' ~ card.card_id }}" name="cards_wanted" value="{{ card.card_id }}">
+        </div>
+        {% endfor %}
+        </div> 
     
-    <label for="cards_wanted">Cards you want:</label><br>
-    <div class="cards-container">
-    {% for card in cards %}
-    <div class="card-choice">
-    <label for="{{'wanted_' ~ card.card_id }}"><img src="{{ card.url }}" alt="{{ card.name }}"></label>
-    <input type="checkbox" id="{{'wanted_' ~ card.card_id }}" name="cards_wanted" value="{{ card.card_id }}">
     </div>
-    {% endfor %}
-    </div> 
-   
-</div>
-<br />
+    <br />
 
-<button type="submit" class="btn btn-primary">Submit</button>
-</form>
+    <button type="submit" class="btn btn-primary">Post</button>
+    </form>
+</div>
 {% endif %}
 {% endblock %}
