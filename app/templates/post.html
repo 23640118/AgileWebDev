@@ -1,8 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-
-{% if current_user.cards_owned == None %}
+{% if current_user.cards|length == 0 %}
     <p> You don't have any cards! </p>
 
 {% else %}
@@ -21,8 +20,16 @@
         />
     </div>
     <div class="form-group">
-
-        <label for="cards_traded"><h4>Which cards do you want to trade?</h4></label><br>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}" role="alert">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        <label for="cards_traded"><h4>Cards to give up:</h4></label><br>
         <div class="cards-container">
         {% for card in current_user.cards %}
         <div class="card-choice">
@@ -35,7 +42,7 @@
         </div>
             
         
-        <label for="cards_wanted"><h4>What cards do you want to trade for?</h4></label><br>
+        <label for="cards_wanted"><h4>Cards wanted:</h4></label><br>
         <div class="cards-container">
         {% for card in cards %}
         <div class="card-choice">

@@ -1,0 +1,12 @@
+{% block content %}
+    {% for card in items %}
+        <custom-card 
+        name="{{ card.name }}" 
+        year="{{ card.year }}" 
+        artist="{{ card.artist }}" 
+        rarity="{{ card.rarity }}" 
+        img="{{ card.url }}" 
+        style="margin:auto">
+        </custom-card>
+    {% endfor %}
+{% endblock %}
