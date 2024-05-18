@@ -7,7 +7,8 @@ Summary of Architecture of the application:
 #To be decided.
 
 Launching the Application:
-#Steps to launch the Applicaitons should be listed here.
+1. Set the key for environment variable "FLASK_SECRET_KEY".
+2. Run the application with flask run.
 
 UWA ID and Github Username:
 23640118 23640118
