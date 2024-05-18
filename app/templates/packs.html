@@ -10,14 +10,71 @@
 
    <div id="packItemsContainer"></div>
    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            {% for category, message in messages %}
-                <div class="alert alert-{{ category }}" role="alert">
-                    {{ message }}
-                </div>
-            {% endfor %}
-        {% endif %}
-    {% endwith %}
+      {% if messages %}
+         {% for category, message in messages %}
+               <div class="alert alert-{{ category }}" role="alert">
+                  {{ message }}
+               </div>
+         {% endfor %}
+      {% endif %}
+   {% endwith %}
+   
+   {% block scripts %}
+      <script>
+         var remaining_time = {{ remaining_time }};
+         console.log(remaining_time);
+         startCountdownTimer(remaining_time);
+
+         function startCountdownTimer(duration) {
+            var timer = duration, hours, minutes, seconds;
+            //Coutdown for daily pack
+            var countdown = setInterval(function () {
+               hours = parseInt(timer / 3600, 10);
+               minutes = parseInt((timer % 3600) / 60, 10);
+               seconds = parseInt(timer % 60, 10);
+
+               hours = hours < 10 ? "0" + hours : hours;
+               minutes = minutes < 10 ? "0" + minutes : minutes;
+               seconds = seconds < 10 ? "0" + seconds : seconds;
+
+               document.getElementById("free_pack_button").textContent = "Next free pack in: " + hours + ":" + minutes + ":" + seconds;
+
+               if (--timer < 0) {
+                     timer = duration;
+                     clearInterval(countdown);
+                     document.getElementById("free_pack_button").textContent = "Daily Free Pack!";
+                     document.getElementById("free_pack_button").addEventListener('click', function () {
+                        console.log("e")
+                        fetch('/open_pack')
+                           .then(response => response.text())
+                           .then(html => {
+                              if (html == "None") {
+                                 location.reload();
+                              }
+                              else{
+                                 //To store fetched html, to display after page refresh for countdown update
+                                 localStorage.setItem('fetchedHTML', html);
+                                 location.reload();
+                              }
+                           })
+                     });      
+
+               }
+            }, 1000);
+         }     
+         // After the page is reloaded, check if there is any saved HTML in localStorage
+         window.onload = function() {
+            var fetchedHTML = localStorage.getItem('fetchedHTML');
+            if (fetchedHTML) {
+               // Append the fetched HTML
+               document.getElementById('modalPackContents').innerHTML = fetchedHTML;
+               // Clear the saved HTML from localStorage
+               localStorage.removeItem('fetchedHTML');
+               $('#packModal').modal('show');
+            }
+         }               
+      </script>
+   {% endblock %}
 
    <div id="packModal" class="modal fade" tabindex="-1" role="dialog">
       <div class="modal-dialog">
@@ -37,59 +94,3 @@
    </div>
 {% endblock %}
 
-{% block scripts %}
-   <script>
-      var remaining_time = 0;//{{ remaining_time }};
-      console.log(remaining_time);
-      startCountdownTimer(remaining_time);
-
-      function startCountdownTimer(duration) {
-          var timer = duration, hours, minutes, seconds;
-          //Coutdown for daily pack
-          var countdown = setInterval(function () {
-              hours = parseInt(timer / 3600, 10);
-              minutes = parseInt((timer % 3600) / 60, 10);
-              seconds = parseInt(timer % 60, 10);
-
-              hours = hours < 10 ? "0" + hours : hours;
-              minutes = minutes < 10 ? "0" + minutes : minutes;
-              seconds = seconds < 10 ? "0" + seconds : seconds;
-
-              document.getElementById("free_pack_button").textContent = "Next free pack in: " + hours + ":" + minutes + ":" + seconds;
-
-              if (--timer < 0) {
-                  timer = duration;
-                  clearInterval(countdown);
-                  document.getElementById("free_pack_button").textContent = "Daily Free Pack!";
-                  document.getElementById("free_pack_button").addEventListener('click', function () {
-                     console.log("e")
-                     fetch('/open_pack')
-                        .then(response => response.text())
-                        .then(html => {
-                           if (html == "None") {
-                              location.reload();
-                           }
-                           else{
-                              //To store fetched html, to display after page refresh for countdown update
-                              localStorage.setItem('fetchedHTML', html);
-                              location.reload();
-                           }
-                        })
-                  });      
-
-              }
-          }, 1000);
-      }     
-      // After the page is reloaded, check if there is any saved HTML in localStorage
-      window.onload = function() {
-         var fetchedHTML = localStorage.getItem('fetchedHTML');
-         if (fetchedHTML) {
-            // Append the fetched HTML
-            document.getElementById('modalPackContents').innerHTML = fetchedHTML;
-            // Clear the saved HTML from localStorage
-            localStorage.removeItem('fetchedHTML');
-            $('#packModal').modal('show');
-         }
-      }               
-   </script>
-{% endblock %}

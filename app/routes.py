@@ -4,7 +4,7 @@ import random
 from typing import cast
 from . import db
 from datetime import datetime, timedelta
-from .database import UserAction
+from .database import UserAction, Post, User, Card
 from flask import Response
 
 routes = Blueprint('routes', __name__)
@@ -140,18 +140,21 @@ def open_pack():
     from .database import User
     user = cast(User, current_user)
     items = [get_random_card() for _ in range(5)]
+    #Removes repeating cards
+    unique_items = set(items)
 
     #Check for cards in database
-    if None in items:
+    if None in unique_items:
         flash("An error occurred while opening the pack. Please contact administrators.", "error")
         return "None"
     
-    for card in items:
+    for card in unique_items:
         user.cards.append(card)
     new_action = UserAction(action_type = 'PACK_FREE', user_id = current_user.user_id)
     db.session.add(new_action)
     db.session.commit()
-    return render_template('open_pack.html', items=items)
+    print("ACTION ADDED")
+    return render_template('open_pack.html', items=unique_items)
     
 @routes.route('/inbox')
 @login_required
