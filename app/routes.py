@@ -1,10 +1,11 @@
-from flask import Blueprint, render_template, flash, redirect, url_for
+from flask import Blueprint, render_template, flash, redirect, url_for, request
 from flask_login import login_required, LoginManager, current_user
 import random
 from typing import cast
 from . import db
 from datetime import datetime, timedelta
 from .database import UserAction
+from flask import Response
 
 routes = Blueprint('routes', __name__)
 
@@ -22,12 +23,96 @@ def get_random_card():
 @routes.route('/')
 @routes.route('/index')
 def index():
-    return render_template('index.html', title='Home')
+    posts = Post.query.all()
+    return render_template('index.html', title='Home', posts=posts)
+
+@routes.route('/update-post', methods=['POST'])
+def trade():
+    post_id = request.form.get('post_id')   # Post being completed
+    u = current_user                        # User completing
+
+    post = Post.query.get(post_id)
+    trade_uid = post.owner_id
+    trade_user = User.query.get(trade_uid)
+
+    # Confirm the both users have the required cards
+    for card in post.cards_traded:
+        if card not in trade_user.cards:
+            return Response(trade_user.username + " does not have the required card/s to complete this trade!", status = 400)
+    
+    for card in post.cards_wanted:
+        if card not in u.cards:
+            return Response("You don't have the required card/s to complete this trade!", status = 400)
+    
+    # Complete the trade
+    for card in post.cards_traded:
+        trade_user.cards.remove(card)
+        u.cards.append(card)
+
+    for card in post.cards_wanted:
+        trade_user.cards.append(card)
+        u.cards.remove(card)
+    
+    # Mark trade as completed
+    post.completed = True
+
+    db.session.commit()
+    
+    return "Congratulations! You've completed the trade!"
+
+@routes.route('/post', methods=['GET','POST'])
+def post():
+    cards = Card.query.all()
+    if request.method == 'POST':
+        message = request.form.get('message')
+        cards_traded = request.form.getlist('cards_traded')
+        cards_wanted = request.form.getlist('cards_wanted')
+
+        u = current_user
+        new_post = Post(owner_id=u.user_id, message=message, completed=False)
+
+        if len(cards_traded) == 0:
+            flash('Select at least one card to trade', 'error')
+            return redirect('/post')
+        if len(cards_wanted) == 0:
+            flash('Select at least one card you want in return', 'error')
+            return redirect('/post')
+        
+        # Add traded cards to the post
+        for card_id in cards_traded:
+            card = Card.query.get(card_id)
+            if card:
+                new_post.cards_traded.append(card)
+        
+        # Add wanted cards to the post
+        for card_id in cards_wanted:
+            card = Card.query.get(card_id)
+            if card:
+                new_post.cards_wanted.append(card)
+
+        db.session.add(new_post)
+        db.session.commit()
+        flash('Post Created!', 'success')
+    return render_template('post.html', title='Make a post', cards=cards)
 
 
 @routes.route('/how_it_works')
 def rules():
     return render_template('rules.html', title='How it works')
+
+@login_required
+@routes.route('/934910939049', methods=['GET','POST'])
+def new_card():
+    if request.method == 'POST':
+        name = request.form.get('name')
+        rarity = request.form.get('rarity')
+        url = "/static/img/cards/" + request.form.get('url') + ".png"
+
+        new_card = Card(rarity=rarity, name=name, url=url)
+
+        db.session.add(new_card)
+        db.session.commit()
+    return render_template('new_card.html', title='Mint a new card')
 
 
 @routes.route('/packs')
