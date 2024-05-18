@@ -50,7 +50,8 @@ class Card(db.Model):
 
 user_cards = db.Table('user_cards',
     db.Column('user_id', db.Integer, db.ForeignKey('user.user_id')),
-    db.Column('card_id', db.Integer, db.ForeignKey('card.card_id'))
+    db.Column('card_id', db.Integer, db.ForeignKey('card.card_id')),
+    db.Column('obtain_date', db.DateTime(timezone=True), default=datetime.now())
 )
 
 # Table for logging user actions
