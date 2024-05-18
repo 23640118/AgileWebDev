@@ -1,0 +1,18 @@
+<svg width="150" height="150" viewBox="0 0 150 150" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_603_570)">
+<rect width="150" height="150" rx="75" fill="white"/>
+<g clip-path="url(#clip1_603_570)">
+<rect width="150" height="150" fill="#C9CCD6"/>
+<path opacity="0.7" d="M19.3616 153.363C19.3616 138.664 19.3616 131.314 21.282 125.363C25.2062 113.203 34.7381 103.671 46.8987 99.7466C52.85 97.8261 60.1994 97.8261 74.8983 97.8261V97.8261C89.5971 97.8261 96.9465 97.8261 102.898 99.7466C115.058 103.671 124.59 113.203 128.514 125.363C130.435 131.314 130.435 138.664 130.435 153.363V191.984H19.3616V153.363Z" fill="white"/>
+<ellipse opacity="0.7" cx="75.0002" cy="60.7337" rx="24.6603" ry="29.144" fill="white"/>
+</g>
+</g>
+<defs>
+<clipPath id="clip0_603_570">
+<rect width="150" height="150" rx="75" fill="white"/>
+</clipPath>
+<clipPath id="clip1_603_570">
+<rect width="150" height="150" fill="white"/>
+</clipPath>
+</defs>
+</svg>
