@@ -26,21 +26,6 @@
       console.log(remaining_time);
       startCountdownTimer(remaining_time);
 
-      console.log("L")
-      document.getElementById("free_pack_button").addEventListener('click', function () {
-         console.log("e")
-         fetch('/open_pack')
-            .then(response => response.text())
-            .then(html => {
-               if (html == "None") {
-                  location.reload();
-               }
-               else{
-                  document.getElementById('packItemsContainer').innerHTML = html;
-               }
-            })
-         });
-
       function startCountdownTimer(duration) {
           var timer = duration, hours, minutes, seconds;
           //Coutdown for daily pack
@@ -59,8 +44,35 @@
                   timer = duration;
                   clearInterval(countdown);
                   document.getElementById("free_pack_button").textContent = "Daily Free Pack!";
+                  console.log("L")
+                  document.getElementById("free_pack_button").addEventListener('click', function () {
+                     console.log("e")
+                     fetch('/open_pack')
+                        .then(response => response.text())
+                        .then(html => {
+                           if (html == "None") {
+                              location.reload();
+                           }
+                           else{
+                              //To store fetched html, to display after page refresh for countdown update
+                              localStorage.setItem('fetchedHTML', html);
+                              location.reload();
+                           }
+                        })
+                  });
+
               }
           }, 1000);
-      }   
+      }     
+      // After the page is reloaded, check if there is any saved HTML in localStorage
+      window.onload = function() {
+         var fetchedHTML = localStorage.getItem('fetchedHTML');
+         if (fetchedHTML) {
+            // Append the fetched HTML
+            document.getElementById('packItemsContainer').innerHTML = fetchedHTML;
+            // Clear the saved HTML from localStorage
+            localStorage.removeItem('fetchedHTML');
+         }
+      }               
    </script>
 {% endblock %}
