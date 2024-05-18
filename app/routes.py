@@ -1,9 +1,8 @@
-from flask import Blueprint, render_template, request, flash, redirect, url_for
+from flask import Blueprint, render_template, request, flash, redirect, url_for, Response
 from flask_login import login_required, current_user
 from .database import Post, User, Card
 from . import db
 from datetime import datetime
-from flask import Response
 
 routes = Blueprint('routes', __name__)
 
@@ -89,22 +88,13 @@ def post():
 def rules():
     return render_template('rules.html', title='How it works')
 
-@routes.route('/934910939049', methods=['GET','POST'])
-def new_card():
-    if request.method == 'POST':
-        name = request.form.get('name')
-        rarity = request.form.get('rarity')
-        url = "/static/img/cards/" + request.form.get('url') + ".png"
-
-        new_card = Card(rarity=rarity, name=name, url=url)
-
-        db.session.add(new_card)
-        db.session.commit()
-    return render_template('new_card.html', title='Mint a new card')
-
-
 
 @routes.route('/packs')
 @login_required
 def packs():
     return render_template('packs.html', title='Packs')
+
+@routes.route('/inbox')
+@login_required
+def inbox():
+    return render_template('inbox.html', title='Inbox')
