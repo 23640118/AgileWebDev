@@ -1,11 +1,10 @@
-from flask import Blueprint, render_template, flash, redirect, url_for, request
+from flask import Blueprint, render_template, flash, redirect, url_for, request, Response
 from flask_login import login_required, LoginManager, current_user
 import random
 from typing import cast
 from . import db
 from datetime import datetime, timedelta
 from .database import UserAction, Post, User, Card
-from flask import Response
 
 routes = Blueprint('routes', __name__)
 
@@ -123,7 +122,6 @@ def new_card():
 @routes.route('/packs')
 @login_required
 def packs():
-    from .database import User, UserAction
     user = cast(User, current_user)
     # Get the time of the last free pack action
     last_free_pack_action = UserAction.query.filter_by(user_id=user.user_id, action_type='PACK_FREE').order_by(UserAction.date.desc()).first()
@@ -142,7 +140,6 @@ def packs():
 @routes.route('/open_pack')
 @login_required
 def open_pack():
-    from .database import User
     user = cast(User, current_user)
     items = [get_random_card() for _ in range(5)]
     #Removes repeating cards
