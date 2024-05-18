@@ -54,7 +54,7 @@ class BasicTest(unittest.TestCase):
         db.drop_all()
         self.app_context.pop()
     
-    def test_post(self):
+    def test_post_and_delete(self):
         # Test create post
         response = self.client.post('/post', data=dict(
             message = '',
@@ -65,6 +65,17 @@ class BasicTest(unittest.TestCase):
         post = Post.query.filter_by(owner_id = 1, completed = False).first()
         action = UserAction.query.filter_by(user_id = 1, action_type = 'POST_4').first()
         self.assertEqual(response.status_code, 200)
+        self.assertIsNotNone(action)
+        self.assertIsNotNone(post)
+
+        # Test delete the post
+        response = self.client.post('/delete-post', data=dict(
+            post_id = 4), 
+            follow_redirects=True)
+        self.assertIn(b"Post deleted!", response.data)
+        # Check post 4 is completed
+        post = Post.query.filter_by(owner_id = 1, completed = True).first()
+        action = UserAction.query.filter_by(user_id = 1, action_type = 'DELETE_4').first()
         self.assertIsNotNone(action)
         self.assertIsNotNone(post)
     

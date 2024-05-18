@@ -27,6 +27,25 @@ def index():
     posts = Post.query.all()
     return render_template('index.html', title='Home', posts=posts)
 
+@routes.route('/delete-post', methods=['POST'])
+def delete():
+    post_id = request.form.get('post_id')   # Post being completed
+    u = current_user                        # User completing
+
+    post = db.session.get(Post, post_id)
+
+    # Confirm the both users have the required cards
+    if not post:
+        return Response(" Delete failed: post does not exist!", status = 400)
+    
+    # Mark trade as completed
+    post.completed = True
+    new_action = UserAction(action_type = 'DELETE_'+str(post.post_id), user_id = u.user_id)
+    db.session.add(new_action) 
+    db.session.commit()
+    
+    return "Post deleted!"
+
 @routes.route('/update-post', methods=['POST'])
 def trade():
     post_id = request.form.get('post_id')   # Post being completed
