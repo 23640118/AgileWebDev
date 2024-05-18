@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
+from flask_migrate import Migrate
 
 #initalise a database object
 db = SQLAlchemy()
@@ -8,6 +9,7 @@ db = SQLAlchemy()
 #initalise login manager object
 login_manager = LoginManager()
 
+migrate = Migrate()
 
 #Starts forum
 def start_forum(config):
@@ -20,6 +22,7 @@ def start_forum(config):
     forum.config.from_object(config)
     
     db.init_app(forum)
+    migrate.init_app(forum, db)
 
     from .routes import routes
     from .auth import auth
