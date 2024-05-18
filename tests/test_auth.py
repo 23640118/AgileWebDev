@@ -3,8 +3,7 @@ from app import start_forum, db
 from app.config import TestConfig
 import unittest
 from app.database import User, UserAction
-from werkzeug.security import generate_password_hash, check_password_hash
-from flask import Flask
+from werkzeug.security import generate_password_hash
 
 def write_db():
     # Add a test user

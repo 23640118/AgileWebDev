@@ -4,7 +4,7 @@ import random
 from typing import cast
 from . import db
 from datetime import datetime, timedelta
-from .database import UserAction, Post, User, Card, user_cards
+from .database import *
 from sqlalchemy import desc, and_
 
 
