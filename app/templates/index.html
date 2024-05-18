@@ -45,6 +45,13 @@
          <button type="button" class="btn btn-primary trade-btn">Trade</button>
       </form>
       {% endif %}
+      {% if current_user.is_authenticated and post.completed != True and current_user.user_id == post.owner_id %}
+      <form class="delete-form">
+         <input type="hidden" name="post_id" value="{{ post.post_id }}">
+         <input type="hidden" name="trade_user" value="{{ current_user }}">
+         <button type="button" class="btn btn-primary delete-btn">Delete</button>
+      </form>
+      {% endif %}
       {% with messages = get_flashed_messages(with_categories=true) %}
          {% if messages %}
             {% for category, message in messages %}
@@ -55,7 +62,7 @@
          {% endif %}
       {% endwith %}
       {% if post.completed == True %}
-      <h4 class="trade-completed">Trade Completed!</h4>
+      <h4 class="trade-completed">Post Ended!</h4>
       {% endif %}
 
    </div>
