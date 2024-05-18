@@ -20,6 +20,7 @@
       <link rel="stylesheet" href="../static/css/style.css">
       <link rel="stylesheet" href="../static/css/marketplace.css">
       <link rel="stylesheet" href="../static/css/card.css">
+      <link rel="stylesheet" href="../static/css/account.css">
 
       <!-- Google Fonts -->
       <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -57,7 +58,13 @@
 
             <div id="auth">
               {% if current_user.is_authenticated %}
+              <div id="header-profile">
                 <a href="/logout" class="btn-primary-btn">Logout</a>
+                <a href="{{ url_for('routes.user', username=current_user.username) }}" class="nav-btn profile-btn">
+                  <img src="{{ current_user.avatar(32) }}" id="header-pfp">
+                  <span>{{ current_user.username }}</span>
+                </a>
+              </div>
               {% else %}
                 <a href="/login" class="btn primary-btn">Log in</a>
                 <a href="/signup" class="btn secondary-btn">Sign up</a>

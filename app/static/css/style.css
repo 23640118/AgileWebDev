@@ -21,6 +21,68 @@ body {
     padding: 0px 25px;
 }
 
+#nav{
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    list-style-type: none;
+    margin: 0px;
+    align-items: center;
+}
+
+.nav-btn {
+    height: 100%;
+    color: rgb(71, 71, 71);
+    text-decoration: none;
+    padding: 0px 20px;
+    margin: 0px 5px;
+    align-content: center;
+}
+
+.nav-btn:hover {
+    background-color: rgb(248, 248, 248);
+    text-decoration: None;
+}
+
+.nav-btn:active {
+    text-decoration: none;
+    color: rgb(71, 71, 71);
+}
+
+#auth{
+    display: flex;
+    flex-direction: row;
+    list-style-type: none;
+    margin: 0px;
+    align-items: center;
+    height: 100%;
+}
+
+#auth .btn {
+    margin-left: 10px;
+}
+
+#header-profile {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+    height:100%
+}
+
+#header-pfp {
+    border-radius: 50px;
+}
+
+#header-profile span {
+    font-weight: 500;
+    margin-left: 10px;
+}
+
+.profile-btn {
+    margin-left: 20px;
+}
+
 .page-title {
     margin-bottom: 40px;
 }
@@ -80,41 +142,6 @@ h2 {
     height: 100px;
 }
 
-#nav{
-    height: 100%;
-    display: flex;
-    flex-direction: row;
-    list-style-type: none;
-    margin: 0px;
-    align-items: center;
-}
-
-.nav-btn {
-    height: 100%;
-    color: rgb(71, 71, 71);
-    text-decoration: none;
-    padding: 0px 20px;
-    margin: 0px 5px;
-    align-content: center;
-}
-
-.nav-btn:hover {
-    background-color: rgb(248, 248, 248);
-}
-
-.nav-btn:active {
-    text-decoration: none;
-    color: rgb(71, 71, 71);
-}
-
-#auth{
-    display: flex;
-    flex-direction: row;
-    list-style-type: none;
-    margin: 0px;
-    align-items: center;
-}
-
 .btn {
     text-decoration: none;
     height: 40px;
@@ -135,14 +162,20 @@ h2 {
     background-color: rgb(68 165 255);
 }
 
-#auth .btn {
-    margin-left: 10px;
-}
-
 .alert-success {
     background-color: green;
 }
 
 .alert-error {
     background-color: red;
+}
+
+/* Account page style */
+.account img {
+    border-radius: 20px;
+    margin-bottom: 20px;
+}
+
+.account h3 {
+    margin-top: 40px;
 }

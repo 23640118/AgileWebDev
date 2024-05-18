@@ -3,6 +3,7 @@ from flask_login import UserMixin
 #SQLite
 from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
+from hashlib import md5
 
 class Post(db.Model):
     post_id = db.Column(db.Integer, primary_key=True)
@@ -33,8 +34,14 @@ class User(db.Model, UserMixin):
     money = db.Column(db.Integer)
     cards = db.relationship('Card', secondary='user_cards', backref=db.backref('users', lazy='dynamic'))
     posts = db.relationship('Post', backref='author', lazy=True)
+    about = db.Column(db.String(500))
+    
     def get_id(self):
         return str(self.user_id)
+    def avatar(self, size):
+        digest = md5(self.email.lower().encode('utf-8')).hexdigest()
+        return f'https://www.gravatar.com/avatar/{digest}?d=identicon&s={size}'
+        
 
 class Card(db.Model):
     card_id = db.Column(db.Integer, primary_key=True)

@@ -82,6 +82,14 @@ def post():
         db.session.commit()
     return render_template('post.html', title='Make a post', cards=cards)
 
+@routes.route('/user/<username>')
+def user(username):
+    user = User.query.filter_by(username=username).first()
+    cards = Card.query.all()
+    n_posts = len(user.posts)
+    n_cards = len(cards)
+    n_owned = len(user.cards)
+    return render_template('user.html', user=user, cards=cards, n_posts=n_posts, n_cards=n_cards, n_owned=n_owned)
 
 @routes.route('/how_it_works')
 def rules():
