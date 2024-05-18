@@ -103,6 +103,8 @@ def rules():
 @login_required
 @routes.route('/934910939049', methods=['GET','POST'])
 def new_card():
+    if current_user.user_id != 1:
+        return render_template('rules.html', title='How it works')
     if request.method == 'POST':
         name = request.form.get('name')
         rarity = request.form.get('rarity')

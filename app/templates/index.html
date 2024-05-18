@@ -24,14 +24,14 @@
       </div>
       <p id="post-message">{{ post.message }}</p>
 
-      <h4> Cards gave up </h4>
+      <h4> Cards given up: </h4>
       <div class="cards-container">
       {% for card in post.cards_traded %}
       <custom-card name="{{ card.name }}" year="{{ card.year }}" artist="{{ card.artist }}" rarity="{{ card.rarity }}" img="{{ card.url }}"></custom-card>
       {% endfor %}
       </div>
 
-      <h4> Cards received </h4>
+      <h4> Cards wanted: </h4>
       <div class="cards-container">
       {% for card in post.cards_wanted %}
       <custom-card name="{{ card.name }}" year="{{ card.year }}" artist="{{ card.artist }}" rarity="{{ card.rarity }}" img="{{ card.url }}"></custom-card>
