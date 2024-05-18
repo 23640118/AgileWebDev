@@ -14,51 +14,7 @@
    <h2> Community posts</h2>
    <div id="posts">
    {% for post in posts|reverse %}
-   <div class="block {% if post.completed == True %}completed{% endif %}">
-      <div id="post-details">
-         <img src="/static/img/profile pic.svg">
-         <div id="details-text">
-         <span id="author-name">{{ post.author.username }} {% if current_user.user_id == post.owner_id%} (You){% endif %}</span>
-         <span id="date">{{ post.date.strftime("%A, %d %B %Y %I:%M:%S %p") }}</span>
-         </div>
-      </div>
-      <p id="post-message">{{ post.message }}</p>
-
-      <h4> Cards given up: </h4>
-      <div class="cards-container">
-      {% for card in post.cards_traded %}
-      <custom-card name="{{ card.name }}" year="{{ card.year }}" artist="{{ card.artist }}" rarity="{{ card.rarity }}" img="{{ card.url }}"></custom-card>
-      {% endfor %}
-      </div>
-
-      <h4> Cards wanted: </h4>
-      <div class="cards-container">
-      {% for card in post.cards_wanted %}
-      <custom-card name="{{ card.name }}" year="{{ card.year }}" artist="{{ card.artist }}" rarity="{{ card.rarity }}" img="{{ card.url }}"></custom-card>
-      {% endfor %}
-      </div>
-
-      {% if current_user.is_authenticated and post.completed != True and current_user.user_id != post.owner_id %}
-      <form class="trade-form">
-         <input type="hidden" name="post_id" value="{{ post.post_id }}">
-         <input type="hidden" name="trade_user" value="{{ current_user }}">
-         <button type="button" class="btn btn-primary trade-btn">Trade</button>
-      </form>
-      {% endif %}
-      {% with messages = get_flashed_messages(with_categories=true) %}
-         {% if messages %}
-            {% for category, message in messages %}
-               <div class="alert alert-{{ category }}" role="alert">
-                     {{ message }}
-               </div>
-            {% endfor %}
-         {% endif %}
-      {% endwith %}
-      {% if post.completed == True %}
-      <h4 class="trade-completed">Trade Completed!</h4>
-      {% endif %}
-
-   </div>
+      {%include '_post.html' %}
    {% endfor %}
    </div>
    
