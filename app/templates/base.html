@@ -38,9 +38,6 @@
       <!-- Include JQuery -->
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
       
-      <!-- Include JQuery -->
-      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-      
       <!-- Popper JS -->
       <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 
@@ -50,27 +47,38 @@
       <!-- JavaScript -->
       <script src="../static/js/script.js"></script>
       <script src="../static/js/trade.js"></script>
+      
     </head>
     <body>
   
         <div id="header">
-            <a href="/index"><img src="../static/img/logo.svg"></a>
-
-            <div id="nav">
-                <a href="/index" class="nav-btn">Marketplace</a>
-                <a href="/how_it_works" class="nav-btn">How it Works</a>
-                <a href="/packs" class="nav-btn">Packs</a>
-                
+          <a id="logo" href="/index"><img src="../static/img/logo.svg"></a>
+            <div class="navbar navbar-expand-lg navbar-light bg-light">
+              <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+              </button>
+              <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                  <li class="nav-item">
+                    <a class="nav-link" href="/index">Marketplace</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="/how_it_works">How it Works</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="/packs">Packs</a>
+                  </li>
+                </ul>
+              </div>
             </div>
 
             <div id="auth">
               {% if current_user.is_authenticated %}
 
               <div id="header-profile">
-                <a href="/logout" class="btn-primary-btn">Logout</a>
                 <a href="{{ url_for('routes.user', username=current_user.username) }}" class="nav-btn profile-btn">
                   <img src="{{ current_user.avatar(32) }}" id="header-pfp">
-                  <span>{{ current_user.username }}</span>
+                  <span>Balance: ${{ current_user.money }}</span>
                 </a>
               </div>
               <div class="dropdown">
@@ -78,8 +86,6 @@
                   Welcome, {{ current_user.username }}!
                 </button>
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                  <a class="dropdown-item" href="/packs">Balance: $ {{ current_user.money }}</a>
-                  <a class="dropdown-item" href="/inbox">Inbox</a>
                   <a class="dropdown-item" href="/logout">Logout</a>
                 </div>
               </div>
@@ -90,11 +96,10 @@
             </div>
             
         </div>
-
-
+      
         <div id="container">
         {% block content %}{% endblock %}
         </div>
-      
+
     </body>
 </html>
