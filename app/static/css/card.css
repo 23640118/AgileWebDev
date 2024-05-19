@@ -85,3 +85,7 @@
     font-weight: 600;
     color: white;
 }
+
+.not_owned {
+    opacity: 15%;
+}
