@@ -1,14 +1,15 @@
 from app import db
 from flask_login import UserMixin
 #SQLite
-from sqlalchemy.sql import func
+from datetime import datetime
 from sqlalchemy.orm import relationship
+from hashlib import md5
 
 # Table to user posts
 class Post(db.Model):
     post_id = db.Column(db.Integer, primary_key=True)
     owner_id = db.Column(db.Integer, db.ForeignKey('user.user_id'))
-    date = db.Column(db.DateTime(timezone=True), default=func.now())
+    date = db.Column(db.DateTime(timezone=True), default=datetime.now())
     message = db.Column(db.String(500))
     cards_traded = relationship('Card', secondary='post_cards_traded', backref='traded')
     cards_wanted = relationship('Card', secondary='post_cards_wanted', backref='posts_wanted')
@@ -43,10 +44,15 @@ class User(db.Model, UserMixin):
     money = db.Column(db.Integer)
     user_card_associations = db.relationship('UserCard', back_populates='user', lazy='dynamic')
     posts = db.relationship('Post', backref='author', lazy=True)
+    about = db.Column(db.String(500))
 
     #required for flask_login module
     def get_id(self):
         return str(self.user_id)
+    
+    def avatar(self, size):
+        digest = md5(self.email.lower().encode('utf-8')).hexdigest()
+        return f'https://www.gravatar.com/avatar/{digest}?d=identicon&s={size}'
     
     @property
     def cards(self):
@@ -84,6 +90,6 @@ class Card(db.Model):
 
 class UserAction(db.Model):
     action_id = db.Column(db.Integer, primary_key=True)
-    action_type = db.Column(db.String(10))          #'POST_postID', 'EXCHANGE_postID", 'LOGIN', 'LOGOUT','REGISTER'
+    action_type = db.Column(db.String(10))          #'POST_<postID>', 'TRADE_<postID>", 'LOGIN', 'LOGOUT','REGISTER','PACK_FREE','PACK_PAID', 'DELETE_<postID>'
     user_id = db.Column(db.Integer, db.ForeignKey('user.user_id'))
-    date = db.Column(db.DateTime(timezone=True), default=func.now())
+    date = db.Column(db.DateTime(timezone=True), default=datetime.now())
