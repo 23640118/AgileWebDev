@@ -34,12 +34,12 @@ def trade():
     
     # Complete the trade
     for card in post.cards_traded:
-        trade_user.cards.remove(card)
-        u.cards.append(card)
+        trade_user.remove_card(card)
+        u.add_card(card)
 
     for card in post.cards_wanted:
-        trade_user.cards.append(card)
-        u.cards.remove(card)
+        trade_user.add_card(card)
+        u.remove_card(card)
     
     # Mark trade as completed
     post.completed = True
