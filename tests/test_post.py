@@ -113,6 +113,24 @@ class BasicTest(unittest.TestCase):
         self.assertIsNotNone(post)
         self.assertIsNotNone(action)
         self.assertIn(b"Congratulations! You've completed the trade!", response.data)
+    
+    def test_trade2(self):
+        # Test to trade when user owns multiple copies of the trade card
+        c = db.session.get(Card, 1)
+        user = db.session.get(User, 1)
+        user.cards.append(c)
+        user.cards.append(c)
+        self.assertEqual(len(user.cards), 3)
+        response = self.client.post('/update-post', data=dict(
+            post_id=1),
+            follow_redirects=True)
+        # Check the post is set as completed and user has 3 cards
+        post = Post.query.filter_by(post_id = 1, completed = True).first()
+        action = UserAction.query.filter_by(user_id = 1, action_type = 'TRADE_1').first()
+        self.assertIsNotNone(post)
+        self.assertIsNotNone(action)
+        self.assertIn(b"Congratulations! You've completed the trade!", response.data)
+        self.assertEqual(len(user.cards), 3)
 
     def test_bad_trade(self):
         # Test trade with user 2 in post 2

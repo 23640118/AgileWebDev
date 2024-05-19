@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="block account">
-<img src="{{ user.avatar(128) }}">
+<img src="{{ user.avatar(128) }}" alt="User's avatar">
 <h1>{{ user.username }}</h1>
 {% if user.about %}<p>{{ user.about }}</p>{% endif %}
 
