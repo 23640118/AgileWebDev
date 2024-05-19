@@ -134,7 +134,6 @@ def user(username):
 
 @routes.route('/discard-card', methods=['POST'])
 def discard():
-    print("This is a test!!!!")
     card_id = request.form.get('card_id')   # card being discarded
     u = current_user                        # User completing
     card = Card.query.get(card_id)
