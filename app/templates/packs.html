@@ -47,7 +47,11 @@
                      document.getElementById("free_pack_button").textContent = "Daily Free Pack!";
                      document.getElementById("free_pack_button").addEventListener('click', function () {
                         fetch('/open_pack',{method: "POST"})
-                           .then(response => response.text())
+                           .then(response => {
+                              if (!response.ok) {
+                                 document.getElementById('modalPackContents').innerHTML = response.text;
+                              }
+                              return response.text()})
                            .then(html => {
                               if (html == "None") {
                                  location.reload();
