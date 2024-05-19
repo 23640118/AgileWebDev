@@ -14,6 +14,7 @@ $('#dialogModal').on('hidden.bs.modal', function () {
     location.reload();
 });
 
+
 $(document).ready(function() {
     $('.trade-btn').click(function() {
         var self = this;
@@ -71,3 +72,4 @@ $(document).ready(function() {
         });
     });
 });
+

@@ -7,6 +7,7 @@ class Card extends HTMLElement {
         const year = this.getAttribute('year') || '';
         const rarity = this.getAttribute('rarity') || '';
         const img = this.getAttribute('img') || '';
+        const quantity = this.getAttribute('quantity') || '';
 
         let color = '#A9A9A9'; // defualt colour (grey)
 
@@ -30,9 +31,21 @@ class Card extends HTMLElement {
                 break;
         }
 
+        // quantity bubble
+        let quantityBubble = '';
+
+        if (quantity >= 2) {
+            quantityBubble = `
+                <div class="quantity">
+                    <span> ${quantity} </span>
+                </div>
+            `;
+        }
+
         // card initialisation
         this.innerHTML = `
             <div class="card-design ${rarity.toLowerCase()}" style="box-shadow: 0 1px 8px 0px ${color}83">
+                ${quantityBubble}
                 <div class="rarity" style="border: 1px solid ${color}"> 
                     <div class="rarity-container" style="background-color: ${color}">${rarity.toUpperCase()}</div>
                     <svg height="100%" viewBox="0 0 30 30" fill="${color}" xmlns="http://www.w3.org/2000/svg">

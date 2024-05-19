@@ -8,6 +8,7 @@ from .database import *
 from sqlalchemy import desc, and_
 
 
+
 routes = Blueprint('routes', __name__)
 
 def get_random_card():
@@ -46,6 +47,7 @@ def delete():
     
     return "Post deleted!"
 
+
 @routes.route('/update-post', methods=['POST'])
 def trade():
     post_id = request.form.get('post_id')   # Post being completed
@@ -66,24 +68,18 @@ def trade():
     
     # Complete the trade
     for card in post.cards_traded:
-            # Find the newest card instance for the trade_user
-        newest_card = db.session.query(user_cards).filter(and_(user_cards.c.user_id == trade_uid, user_cards.c.card_id == card.card_id)).order_by(desc(user_cards.c.obtain_date)).first()
-        if newest_card:
-            db.session.execute(user_cards.delete().where(and_(user_cards.c.user_id == trade_uid, user_cards.c.card_id == card.card_id, user_cards.c.obtain_date == newest_card.obtain_date)))
-        u.cards.append(card)
+
+        trade_user.remove_card(card)
+        u.add_card(card)
 
     for card in post.cards_wanted:
-        newest_card = db.session.query(user_cards).filter(and_(user_cards.c.user_id == u.user_id, user_cards.c.card_id == card.card_id)).order_by(desc(user_cards.c.obtain_date)).first()
-        if newest_card:
-            db.session.execute(user_cards.delete().where(and_(user_cards.c.user_id == u.user_id, user_cards.c.card_id == card.card_id, user_cards.c.obtain_date == newest_card.obtain_date)))
-        trade_user.cards.append(card)
-        
+        trade_user.add_card(card)
+        u.remove_card(card)
     
     # Mark trade as completed
     post.completed = True
     new_action = UserAction(action_type = 'TRADE_'+str(post.post_id), user_id = u.user_id)
-    db.session.add(new_action)
-
+    db.session.add(new_action) 
     db.session.commit()
     
     return "Congratulations! You've completed the trade!"

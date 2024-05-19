@@ -9,11 +9,9 @@ def write_db():
     # Create user 1 with card 1
     user = User(username = 'test', email = 'test@t.com', password = generate_password_hash('pwd'), money = 100)
     card = Card(rarity = 'legendary', name = "Blue", url = '/static/img/cards/Blue.png', artist = 'Jon', year = 1998)
-    user.cards.append(card)
     # Create user 2 with card 2
     user2 = User(username = 'test', email = 'test1@t.com', password = generate_password_hash('pwd'), money = 100)
     card2 = Card(rarity = 'epic', name = "Song1", url = '/static/img/cards/Blue.png', artist = 'Stevie', year = 1999)
-    user2.cards.append(card2)
     # Create a card no one owns
     card3 = Card(rarity = 'common', name = "Song2", url = '/static/img/cards/Blue.png', artist = 'Artist', year = 1999)
     # Create a post by user 2 where user 1 can trade
@@ -30,6 +28,9 @@ def write_db():
     post3.cards_wanted.append(card)
     # Add data to database
     db.session.add_all([user, user2, card, card2, card3, post, post2, post3])
+    db.session.commit()
+    user.add_card(card)
+    user2.add_card(card2)
     db.session.commit()
 
 def login(client):
