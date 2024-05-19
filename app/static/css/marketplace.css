@@ -61,4 +61,9 @@
 .cards-container img{
     height: 200px;
     margin-right: 10px;
+
+}
+
+.completed {
+    background-color: #e3f0e3;
 }
