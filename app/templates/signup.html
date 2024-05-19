@@ -1,13 +1,6 @@
 {% extends "base.html" %}
 
 {% block content %}
-<style>
-   .center-form {
-      text-align:center;
-      line-height:120%;
-      }
-</style>
-
 <script>
    //Check for validity of user entered information
    //Future sanitisation checks should also be implemented here
@@ -50,49 +43,44 @@
    <h3>Sign Up</h3>
    <div class="form-group">
      <label for="email">Email Address</label>
-     <br />
      <input
        type="email"
        class="form-control"
        id="email"
        name="email"
        placeholder="Enter Email"
-     />
+     >
    </div>
    <div class="form-group">
      <label for="username">Username</label>
-     <br />
      <input
        type="text"
        class="form-control"
        id="username"
        name="username"
        placeholder="Enter Username (Maximum 10 Letters)"
-     />
+     >
    </div>
    <div class="form-group">
      <label for="password1">Password</label>
-     <br />
      <input
        type="password"
        class="form-control"
        id="password1"
        name="password1"
        placeholder="Enter Password (Maximum 20 Letters)"
-     />
+     >
    </div>
    <div class="form-group">
      <label for="password2">Password (Confirm)</label>
-     <br />
      <input
        type="password"
        class="form-control"
        id="password2"
        name="password2"
        placeholder="Confirm Password"
-     />
+     >
    </div>
-   <br />
    {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
           {% for category, message in messages %}

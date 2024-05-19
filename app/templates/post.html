@@ -10,14 +10,13 @@
     <h3>Write a new post!</h3>
     <div class="form-group">
         <label for="message">Post message:</label>
-        <br />
         <input
         type="text"
         class="form-control block-input-field"
         id="message"
         name="message"
         placeholder="Write your message here..."
-        />
+        >
     </div>
     <div class="form-group">
         {% with messages = get_flashed_messages(with_categories=true) %}
@@ -29,7 +28,7 @@
                 {% endfor %}
             {% endif %}
         {% endwith %}
-        <label for="cards_traded"><h4>Which cards do you want to trade?</h4></label><br>
+        <h4><label for="cards_traded">Cards to give up:</label></h4><br>
         <div class="cards-container">
         {% for card in current_user.cards %}
         <div class="card-choice">
@@ -42,7 +41,7 @@
         </div>
             
         
-        <label for="cards_wanted"><h4>What cards do you want to trade for?</h4></label><br>
+        <h4><label for="cards_wanted">Cards wanted:</label></h4><br>
         <div class="cards-container">
         {% for card in cards %}
         <div class="card-choice">
@@ -55,8 +54,6 @@
         </div> 
     
     </div>
-    <br />
-
     <button type="submit" class="btn btn-primary">Post</button>
     </form>
 </div>
