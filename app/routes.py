@@ -6,10 +6,7 @@ from . import db
 from datetime import datetime, timedelta
 from .database import *
 from sqlalchemy import desc, and_
-from flask_wtf import FlaskForm
 
-class EmptyForm(FlaskForm):
-    pass
 
 
 routes = Blueprint('routes', __name__)
@@ -91,10 +88,6 @@ def trade():
 @routes.route('/post', methods=['GET','POST'])
 def post():
     cards = Card.query.all()
-    form = EmptyForm()
-    if not form.validate_on_submit():
-        # If the form is not valid, render the form again with the error messages
-        return render_template('/post.html', title='Make a post', cards=cards, form=form)
     if request.method == 'POST':
         message = request.form.get('message')
         cards_traded = request.form.getlist('cards_traded')
@@ -128,7 +121,7 @@ def post():
         db.session.add(new_action)
         db.session.commit()
         flash('Post Created!', 'success')
-    return render_template('post.html', title='Make a post', cards=cards, form=form)
+    return render_template('post.html', title='Make a post', cards=cards)
 
 @routes.route('/user/<username>')
 def user(username):
