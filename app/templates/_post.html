@@ -29,10 +29,15 @@
        <input type="hidden" name="trade_user" value="{{ current_user }}">
        <button type="button" class="btn btn-primary trade-btn">Trade</button>
     </form>
+    {% elif current_user.is_authenticated and post.completed != True and current_user.user_id == post.owner_id %}
+    <form class="delete-form">
+       <input type="hidden" name="post_id" value="{{ post.post_id }}">
+       <button type="button" class="btn btn-primary delete-btn">Delete</button>
+    </form>
     {% endif %}
 
     {% if post.completed == True %}
-    <h4 style="color:green; font-size: 20px;">Trade Completed!</h4>
+    <h4 style="color:grey; font-size: 20px;">Trade Ended!</h4>
     {% endif %}
 
  </div>
