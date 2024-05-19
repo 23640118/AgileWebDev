@@ -79,7 +79,8 @@ def trade():
     
     # Mark trade as completed
     post.completed = True
-
+    new_action = UserAction(action_type = 'TRADE_'+str(post.post_id), user_id = u.user_id)
+    db.session.add(new_action) 
     db.session.commit()
     
     return "Congratulations! You've completed the trade!"
