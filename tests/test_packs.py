@@ -50,7 +50,7 @@ class BasicTest(unittest.TestCase):
 
     def test_open_pack(self):
         # Open free pack
-        response = self.client.get('/open_pack', follow_redirects=True)
+        response = self.client.post('/open_pack', follow_redirects=True)
         self.assertEqual(response.status_code, 200)
         action = UserAction.query.filter_by(user_id = 1, action_type = 'PACK_FREE').first()
         user = User.query.filter_by(user_id = 1).first()
@@ -64,11 +64,11 @@ class BasicTest(unittest.TestCase):
         action = UserAction(user_id = 1, action_type = 'PACK_FREE')
         db.session.add(action)
         db.session.commit()
-        response = self.client.get('/open_pack', follow_redirects=True)
-        self.assertEqual(response.status_code, 200)
+        response = self.client.post('/open_pack', follow_redirects=True)
+        self.assertEqual(response.status_code, 400)
         action2 = UserAction.query.filter_by(user_id = 1, action_type = 'PACK_FREE').order_by(UserAction.date.desc()).first()
         user = User.query.filter_by(user_id = 1).first()
         # Check no new free pack in userAction table
-        self.assertTrue(action.action_id == action2.action_id)
+        self.assertEqual(action.action_id, action2.action_id)
         # Check user gain no cards
-        self.assertTrue(len(user.cards) == 0)
+        self.assertEqual(len(user.cards), 0)
