@@ -9,7 +9,7 @@
 <h3>{{ user.username }}'s Collection: {{ n_owned }}/{{ n_cards }}</h3>
 <div class="cards-container">
 {% for card in cards %}
-    <custom-card {% if card not in user.cards%} class="not_owned" {% endif %} name="{{ card.name }}" year="{{ card.year }}" artist="{{ card.artist }}" rarity="{{ card.rarity }}" img="{{ card.url }}"></custom-card>
+    <custom-card {% if card not in user.cards.keys() %} class="not_owned" {% endif %} name="{{ card.name }}" year="{{ card.year }}" artist="{{ card.artist }}" rarity="{{ card.rarity }}" img="{{ card.url }}" quantity="{{ current_user.cards.get(card) }}"></custom-card>
 {% endfor %}
 </div>
 
