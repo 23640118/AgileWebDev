@@ -5,7 +5,6 @@ import unittest
 from app.database import User, Card, UserAction
 from werkzeug.security import generate_password_hash
 from unittest.mock import patch
-from datetime import timedelta
 
 def write_db():
     user = User(username = 'test', email = 'test@t.com', password = generate_password_hash('pwd'), money = 100)
@@ -60,11 +59,16 @@ class BasicTest(unittest.TestCase):
         self.assertTrue(number_of_cards>0)
         self.assertIsNotNone(action)
 
-        # Try to open free cards again
+    def test_open_pack_during_count_down(self):
+        # Try to open free cards while there is time remaining\
+        action = UserAction(user_id = 1, action_type = 'PACK_FREE')
+        db.session.add(action)
+        db.session.commit()
         response = self.client.get('/open_pack', follow_redirects=True)
         self.assertEqual(response.status_code, 200)
         action2 = UserAction.query.filter_by(user_id = 1, action_type = 'PACK_FREE').order_by(UserAction.date.desc()).first()
+        user = User.query.filter_by(user_id = 1).first()
         # Check no new free pack in userAction table
         self.assertTrue(action.action_id == action2.action_id)
         # Check user gain no cards
-        self.assertTrue(number_of_cards == len(user.cards))
+        self.assertTrue(len(user.cards) == 0)
