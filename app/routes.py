@@ -132,6 +132,31 @@ def user(username):
     n_owned = len(user.cards)
     return render_template('user.html', user=user, cards=cards, n_posts=n_posts, n_cards=n_cards, n_owned=n_owned)
 
+@routes.route('/discard-card', methods=['POST'])
+def discard():
+    card_id = request.form.get('card_id')   # card being discarded
+    u = current_user                        # User completing
+    card = Card.query.get(card_id)
+
+    if card.rarity == 'legendary':
+        u.money += 500
+    elif card.rarity == 'epic':
+        u.money += 250
+    elif card.rarity == 'rare':
+        u.money += 100
+    elif card.rarity == 'common':
+        u.money += 50
+    
+    u.remove_card(card)
+    
+    # Log user action
+    new_action = UserAction(action_type = 'DISCARD_'+str(card_id), user_id = u.user_id)
+    db.session.add(new_action) 
+    db.session.commit()
+    
+    return "Card discarded succesfully!"
+
+
 @routes.route('/how_it_works')
 def rules():
     return render_template('rules.html', title='How it works')
