@@ -44,10 +44,15 @@ class User(db.Model, UserMixin):
     money = db.Column(db.Integer)
     user_card_associations = db.relationship('UserCard', back_populates='user', lazy='dynamic')
     posts = db.relationship('Post', backref='author', lazy=True)
+    about = db.Column(db.String(500))
 
     #required for flask_login module
     def get_id(self):
         return str(self.user_id)
+    
+    def avatar(self, size):
+        digest = md5(self.email.lower().encode('utf-8')).hexdigest()
+        return f'https://www.gravatar.com/avatar/{digest}?d=identicon&s={size}'
     
     @property
     def cards(self):

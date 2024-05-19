@@ -91,33 +91,6 @@ def post():
         message = request.form.get('message')
         cards_traded = request.form.getlist('cards_traded')
         cards_wanted = request.form.getlist('cards_wanted')
-        
-        u = current_user
-        new_post = Post(owner_id=u.user_id, message=message, completed=False)
-
-        if len(cards_traded) == 0:
-            flash('Select at least one card to trade', 'error')
-            return redirect('/post')
-        if len(cards_wanted) == 0:
-            flash('Select at least one card you want in return', 'error')
-            return redirect('/post')
-        
-        # Add traded cards to the post
-        for card_id in cards_traded:
-            card = Card.query.get(card_id)
-            if card:
-                new_post.cards_traded.append(card)
-        
-        # Add wanted cards to the post
-        for card_id in cards_wanted:
-            card = Card.query.get(card_id)
-            if card:
-                new_post.cards_wanted.append(card)
-
-        db.session.add(new_post)
-        db.session.commit()
-        flash('Post Created!', 'success')
-    return render_template('post.html', title='Make a post', cards=cards)
 
         u = current_user
         new_post = Post(owner_id=u.user_id, message=message, completed=False)
