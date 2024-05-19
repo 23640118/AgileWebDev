@@ -21,6 +21,7 @@ $(document).ready(function() {
     });
 });
 
+
 $(document).ready(function() {
     $('.delete-btn').click(function() {
         var confirmed = confirm('Are you sure you want to delete this post?');
@@ -43,3 +44,4 @@ $(document).ready(function() {
         }
     });
 });
+

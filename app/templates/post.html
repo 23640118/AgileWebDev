@@ -29,12 +29,12 @@
                 {% endfor %}
             {% endif %}
         {% endwith %}
-        <label for="cards_traded"><h4>Cards to give up:</h4></label><br>
+        <label for="cards_traded"><h4>Which cards do you want to trade?</h4></label><br>
         <div class="cards-container">
         {% for card in current_user.cards %}
         <div class="card-choice">
         <label for="{{'traded_' ~ card.card_id }}">
-            <custom-card name="{{ card.name }}" year="{{ card.year }}" artist="{{ card.artist }}" rarity="{{ card.rarity }}" img="{{ card.url }}" style="margin:auto"></custom-card>
+            <custom-card name="{{ card.name }}" year="{{ card.year }}" artist="{{ card.artist }}" rarity="{{ card.rarity }}" img="{{ card.url }}" style="margin:auto" quantity="{{ current_user.cards.get(card) }}"></custom-card>
         </label>
         <input type="checkbox" id="{{'traded_' ~ card.card_id }}" name="cards_traded" value="{{ card.card_id }}">
         </div>
@@ -42,7 +42,7 @@
         </div>
             
         
-        <label for="cards_wanted"><h4>Cards wanted:</h4></label><br>
+        <label for="cards_wanted"><h4>What cards do you want to trade for?</h4></label><br>
         <div class="cards-container">
         {% for card in cards %}
         <div class="card-choice">
