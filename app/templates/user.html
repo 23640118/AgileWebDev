@@ -9,7 +9,17 @@
 <h3>{{ user.username }}'s Collection: {{ n_owned }}/{{ n_cards }}</h3>
 <div class="cards-container">
 {% for card in cards %}
-    <custom-card {% if card not in user.cards %} class="not_owned" {% endif %} name="{{ card.name }}" year="{{ card.year }}" artist="{{ card.artist }}" rarity="{{ card.rarity }}" img="{{ card.url }}"></custom-card>
+    <div class="account_card">
+        <custom-card {% if card not in user.cards%} class="not_owned" {% endif %} name="{{ card.name }}" year="{{ card.year }}" artist="{{ card.artist }}" rarity="{{ card.rarity }}" img="{{ card.url }}" quantity="{{ current_user.cards.get(card) }}"></custom-card>
+
+        {% if current_user == user and card in user.cards%}
+        <form class="discard-form">
+            <input type="hidden" name="card_id" value="{{ card.card_id }}">
+            <input type="hidden" name="rarity" value="{{ card.rarity }}">
+            <button type="button" class="btn btn-primary discard-btn">Discard</button>
+         </form>
+        {% endif %}
+    </div>
 {% endfor %}
 </div>
 
