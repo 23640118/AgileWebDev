@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
+from flask_wtf import CSRFProtect
 
 #initalise a database object
 db = SQLAlchemy()
@@ -12,6 +13,7 @@ login_manager = LoginManager()
 #Starts forum
 def start_forum(config):
     forum = Flask(__name__)
+    csrf = CSRFProtect(forum)
 
     login_manager.init_app(forum)
     login_manager.login_view = 'auth.login'  # Redirects unauthorised users to login page

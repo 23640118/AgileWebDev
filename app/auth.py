@@ -3,6 +3,10 @@ from .database import User, UserAction
 from . import db
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, login_required, logout_user, current_user, LoginManager
+from flask_wtf import FlaskForm
+
+class EmptyForm(FlaskForm):
+    pass
 
 #Routes for user account login/signup methods/pages only
 
@@ -27,6 +31,10 @@ def logout():
 
 @auth.route('/login', methods=['GET','POST'])
 def login():
+    form = EmptyForm()
+    if not form.validate_on_submit():
+        # If the form is not valid, render the form again with the error messages
+        return render_template('/login.html', title='Log in', form=form)
     if request.method == 'POST':
         email = request.form.get('email')
         password = request.form.get('password')
@@ -43,7 +51,7 @@ def login():
                 flash('Login Failed: Please check email and password.', category='error')
         else:
             flash('Login Failed: Please check email and password.', category='error')
-    return render_template('login.html', title='Log in')
+    return render_template('login.html', title='Log in', form=form)
 
 
 @auth.route('/signup', methods=['GET','POST'])
