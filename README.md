@@ -20,7 +20,9 @@ auth.py is seperated from routes.py for management and security.
 
 database.py defines the models and table of the database instance used to store application and user informations.
 
-
+Running Tests:
+Run all tests with command:
+    python3 -m unittest discover tests
 
 
 Launching the Application:
