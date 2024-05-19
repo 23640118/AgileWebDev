@@ -2,14 +2,14 @@
 
 {% block content %}
 <div class="block account">
-<img src="{{ user.avatar(128) }}">
+<img src="{{ user.avatar(128) }}" alt="User's avatar">
 <h1>{{ user.username }}</h1>
 {% if user.about %}<p>{{ user.about }}</p>{% endif %}
 
 <h3>{{ user.username }}'s Collection: {{ n_owned }}/{{ n_cards }}</h3>
 <div class="cards-container">
 {% for card in cards %}
-    <custom-card {% if card not in user.cards%} class="not_owned" {% endif %} name="{{ card.name }}" year="{{ card.year }}" artist="{{ card.artist }}" rarity="{{ card.rarity }}" img="{{ card.url }}"></custom-card>
+    <custom-card {% if card not in user.cards %} class="not_owned" {% endif %} name="{{ card.name }}" year="{{ card.year }}" artist="{{ card.artist }}" rarity="{{ card.rarity }}" img="{{ card.url }}"></custom-card>
 {% endfor %}
 </div>
 

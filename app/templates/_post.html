@@ -1,7 +1,10 @@
 <!-- jinja sub-template for posts -->
+
+<!doctype html>
+<html lang="en">
 <div class="block {% if post.completed == True %}completed{% endif %}">
     <div id="post-details">
-       <img src="{{ post.author.avatar(128) }}">
+       <img src="{{ post.author.avatar(128) }}" alt="Author's avatar">
        <div id="details-text">
          <a style="color:#212529" href="/user/{{ post.author.username }}"><span id="author-name">{{ post.author.username }} {% if current_user.user_id == post.owner_id%} (You){% endif %}</span></a>
        <span id="date">{{ post.date.strftime("%A, %d %B %Y %I:%M:%S %p") }}</span>

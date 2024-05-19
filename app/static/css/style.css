@@ -270,3 +270,8 @@ display: block;
     display: none;
 }
 }
+
+.center-form {
+    text-align:center;
+    line-height:120%;
+}
