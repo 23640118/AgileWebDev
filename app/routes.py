@@ -10,10 +10,11 @@ from sqlalchemy import desc, and_
 
 routes = Blueprint('routes', __name__)
 
-def get_random_card():
+def get_random_card(probability=None):
     from .database import Card
     rarity = ['common', 'rare', 'epic', 'legendary']
-    probability = [0.60, 0.25, 0.14, 0.01]
+    if probability is None:
+        probability = [0.60, 0.25, 0.14, 0.01]
     chosen_rarity = random.choices(rarity, weights=probability)[0]
     rarity_list = Card.query.filter_by(rarity = chosen_rarity).all()
     if not rarity_list:
@@ -178,7 +179,7 @@ def packs():
 @login_required
 def open_pack():
     user = cast(User, current_user)
-    items = [get_random_card() for _ in range(5)]
+    items = [get_random_card(probability=[0.60, 0.25, 0.14, 0.01]) for _ in range(5)]
     #Removes repeating cards
     unique_items = set(items)
 
@@ -189,11 +190,40 @@ def open_pack():
     
     for card in unique_items:
         user.cards.append(card)
+    user.money += 1000
     new_action = UserAction(action_type = 'PACK_FREE', user_id = current_user.user_id)
     db.session.add(new_action)
     db.session.commit()
     print("ACTION ADDED")
     return render_template('open_pack.html', items=unique_items)
+
+@routes.route('/open_pack_paid', methods=['POST'])
+@login_required
+def open_pack_paid():
+    user = cast(User, current_user)
+    if user.money < 1000:
+        flash("Not enough money!")
+        return "None"
+    
+    items = [get_random_card(probability=[0.40, 0.30, 0.20, 0.10]) for _ in range(5)]
+    unique_items = set(items)
+
+    user.money -= 1000
+
+    if None in unique_items:
+        flash("An error occurred while opening the pack. Please contact administrators.", "error")
+        return "None"
+    
+    for card in unique_items:
+        user.cards.append(card)
+
+    new_action = UserAction(action_type = 'PACK_PAID', user_id = current_user.user_id)
+    db.session.add(new_action)
+    db.session.commit()
+    print("ACTION ADDED")
+
+    return render_template('open_pack.html', items=unique_items)
+    
     
 @routes.route('/inbox')
 @login_required
