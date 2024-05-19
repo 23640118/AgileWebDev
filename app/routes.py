@@ -217,7 +217,7 @@ def open_pack():
         return "None"
     
     for card in unique_items:
-        user.cards.append(card)
+        user.add_card(card)
     user.money += 1000
     new_action = UserAction(action_type = 'PACK_FREE', user_id = current_user.user_id)
     db.session.add(new_action)
@@ -243,7 +243,7 @@ def open_pack_paid():
         return "None"
     
     for card in unique_items:
-        user.cards.append(card)
+        user.add_card(card)
 
     new_action = UserAction(action_type = 'PACK_PAID', user_id = current_user.user_id)
     db.session.add(new_action)

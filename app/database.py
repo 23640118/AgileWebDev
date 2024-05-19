@@ -61,7 +61,10 @@ class User(db.Model, UserMixin):
     def add_card(self, card, quantity=1):
         user_card = self.user_card_associations.filter_by(card_id=card.card_id).first()
         if user_card:
-            user_card.quantity += quantity
+            if user_card.quantity != None:
+                user_card.quantity += quantity
+            else:
+                user_card.quantity = 1
         else:
             user_card = UserCard(user_id=self.user_id, card_id=card.card_id, quantity=quantity)
             self.user_card_associations.append(user_card)
