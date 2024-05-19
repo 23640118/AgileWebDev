@@ -118,8 +118,9 @@ class BasicTest(unittest.TestCase):
         # Test to trade when user owns multiple copies of the trade card
         c = db.session.get(Card, 1)
         user = db.session.get(User, 1)
-        user.cards.append(c)
-        user.cards.append(c)
+        user.add_card(c)
+        user.add_card(c)
+        db.session.commit()
         self.assertEqual(len(user.cards), 3)
         response = self.client.post('/update-post', data=dict(
             post_id=1),
