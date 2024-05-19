@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, flash, redirect, url_for, request, Response
+from flask import Blueprint, render_template, make_response, flash, redirect, url_for, request, Response
 from flask_login import login_required, LoginManager, current_user
 import random
 from typing import cast
@@ -8,12 +8,14 @@ from .database import *
 from sqlalchemy import desc, and_
 
 
+
 routes = Blueprint('routes', __name__)
 
-def get_random_card():
+def get_random_card(probability=None):
     from .database import Card
     rarity = ['common', 'rare', 'epic', 'legendary']
-    probability = [0.60, 0.25, 0.14, 0.01]
+    if probability is None:
+        probability = [0.60, 0.25, 0.14, 0.01]
     chosen_rarity = random.choices(rarity, weights=probability)[0]
     rarity_list = Card.query.filter_by(rarity = chosen_rarity).all()
     if not rarity_list:
@@ -46,6 +48,7 @@ def delete():
     
     return "Post deleted!"
 
+
 @routes.route('/update-post', methods=['POST'])
 def trade():
     post_id = request.form.get('post_id')   # Post being completed
@@ -66,24 +69,18 @@ def trade():
     
     # Complete the trade
     for card in post.cards_traded:
-            # Find the newest card instance for the trade_user
-        newest_card = db.session.query(user_cards).filter(and_(user_cards.c.user_id == trade_uid, user_cards.c.card_id == card.card_id)).order_by(desc(user_cards.c.obtain_date)).first()
-        if newest_card:
-            db.session.execute(user_cards.delete().where(and_(user_cards.c.user_id == trade_uid, user_cards.c.card_id == card.card_id, user_cards.c.obtain_date == newest_card.obtain_date)))
-        u.cards.append(card)
+
+        trade_user.remove_card(card)
+        u.add_card(card)
 
     for card in post.cards_wanted:
-        newest_card = db.session.query(user_cards).filter(and_(user_cards.c.user_id == u.user_id, user_cards.c.card_id == card.card_id)).order_by(desc(user_cards.c.obtain_date)).first()
-        if newest_card:
-            db.session.execute(user_cards.delete().where(and_(user_cards.c.user_id == u.user_id, user_cards.c.card_id == card.card_id, user_cards.c.obtain_date == newest_card.obtain_date)))
-        trade_user.cards.append(card)
-        
+        trade_user.add_card(card)
+        u.remove_card(card)
     
     # Mark trade as completed
     post.completed = True
     new_action = UserAction(action_type = 'TRADE_'+str(post.post_id), user_id = u.user_id)
-    db.session.add(new_action)
-
+    db.session.add(new_action) 
     db.session.commit()
     
     return "Congratulations! You've completed the trade!"
@@ -178,7 +175,14 @@ def packs():
 @login_required
 def open_pack():
     user = cast(User, current_user)
-    items = [get_random_card() for _ in range(5)]
+    # Get the time of the last free pack action
+    last_free_pack_action = UserAction.query.filter_by(user_id=user.user_id, action_type='PACK_FREE').order_by(UserAction.date.desc()).first()
+    if last_free_pack_action:
+        time_since_last_pack = datetime.now() - last_free_pack_action.date
+        if time_since_last_pack < timedelta(hours=24):
+            return Response("Free pack not ready yet!", status = 400)
+
+    items = [get_random_card(probability=[0.60, 0.25, 0.14, 0.01]) for _ in range(5)]
     #Removes repeating cards
     unique_items = set(items)
 
@@ -189,11 +193,40 @@ def open_pack():
     
     for card in unique_items:
         user.cards.append(card)
+    user.money += 1000
     new_action = UserAction(action_type = 'PACK_FREE', user_id = current_user.user_id)
     db.session.add(new_action)
     db.session.commit()
     print("ACTION ADDED")
     return render_template('open_pack.html', items=unique_items)
+
+@routes.route('/open_pack_paid', methods=['POST'])
+@login_required
+def open_pack_paid():
+    user = cast(User, current_user)
+    if user.money < 1000:
+        flash("Not enough money!")
+        return "None"
+    
+    items = [get_random_card(probability=[0.40, 0.30, 0.20, 0.10]) for _ in range(5)]
+    unique_items = set(items)
+
+    user.money -= 1000
+
+    if None in unique_items:
+        flash("An error occurred while opening the pack. Please contact administrators.", "error")
+        return "None"
+    
+    for card in unique_items:
+        user.cards.append(card)
+
+    new_action = UserAction(action_type = 'PACK_PAID', user_id = current_user.user_id)
+    db.session.add(new_action)
+    db.session.commit()
+    print("ACTION ADDED")
+
+    return render_template('open_pack.html', items=unique_items)
+    
     
 @routes.route('/inbox')
 @login_required

@@ -8,6 +8,8 @@
 
    <button id="free_pack_button" class="btn btn-info btn-lg">Loading...</button>
 
+   <button id="paid_pack_button" class="btn btn-info btn-lg">Paid Pack</button>
+
    <div id="packItemsContainer"></div>
    {% with messages = get_flashed_messages(with_categories=true) %}
       {% if messages %}
@@ -44,9 +46,12 @@
                      clearInterval(countdown);
                      document.getElementById("free_pack_button").textContent = "Daily Free Pack!";
                      document.getElementById("free_pack_button").addEventListener('click', function () {
-                        console.log("e")
                         fetch('/open_pack',{method: "POST"})
-                           .then(response => response.text())
+                           .then(response => {
+                              if (!response.ok) {
+                                 document.getElementById('modalPackContents').innerHTML = response.text;
+                              }
+                              return response.text()})
                            .then(html => {
                               if (html == "None") {
                                  location.reload();
@@ -62,6 +67,19 @@
                }
             }, 1000);
          }     
+         document.getElementById('paid_pack_button').addEventListener('click', function () {
+            fetch('open_pack_paid', {method: "POST"})
+            .then(response => response.text())
+            .then(html => {
+               if (html == "None") {
+                  alert('Purchase failed.');
+               }
+               else {
+                  localStorage.setItem('fetchedHTML', html);
+                  location.reload();
+               }
+            })
+         });
          // After the page is reloaded, check if there is any saved HTML in localStorage
          window.onload = function() {
             var fetchedHTML = localStorage.getItem('fetchedHTML');

@@ -107,6 +107,31 @@ h2 {
     width: 100%;
 }
 
+
+.page-title {
+    margin-bottom: 40px;
+}
+
+h1 {
+    font-weight: 600;
+    font-size: 26px;
+    margin-bottom: 20px;
+}
+
+.page-title p {
+    margin-bottom: 20px;
+}
+
+h2 {
+    font-weight: 500;
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+.form-group {
+    width: 100%;
+}
+
 .center-form {
     width: 100%;
 }
@@ -269,4 +294,9 @@ display: block;
 #logo img {
     display: none;
 }
+}
+
+.center-form {
+    text-align:center;
+    line-height:120%;
 }
